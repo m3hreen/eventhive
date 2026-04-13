@@ -7,7 +7,7 @@
       </router-link>
 
       <div class="nav-links">
-        <router-link to="/" class="nav-link">Home</router-link>
+        <router-link v-if="user" to="/" class="nav-link">Home</router-link>
 
         <template v-if="user && user.role === 'attendee'">
           <router-link to="/suggestions" class="nav-link">Suggestions</router-link>
