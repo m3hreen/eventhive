@@ -60,7 +60,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const savedUser = localStorage.getItem('eventsphereUser')
+  const savedUser = localStorage.getItem('eventhiveUser')
   const user = savedUser ? JSON.parse(savedUser) : null
 
   if (to.meta.requiresAuth && !user) {
