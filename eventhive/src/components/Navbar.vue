@@ -12,18 +12,31 @@
         <template v-if="user && user.role === 'attendee'">
           <router-link to="/suggestions" class="nav-link">Suggestions</router-link>
           <router-link to="/my-suggestions" class="nav-link">My Suggestions</router-link>
+          <router-link to="/saved-events" class="nav-link">Saved Events</router-link>
           <router-link to="/inbox" class="nav-link">Inbox</router-link>
         </template>
 
         <template v-if="user && user.role === 'organizer'">
           <router-link to="/my-events" class="nav-link">My Events</router-link>
           <router-link to="/create-event" class="nav-link">Create Event</router-link>
-          <router-link to="/organizer-dashboard" class="nav-link">Dashboard</router-link>
         </template>
 
         <template v-if="user">
-          <span class="user-greeting">Hi, {{ user.name }}</span>
-          <button class="nav-outline-btn" @click="handleLogout">Logout</button>
+          <router-link
+  v-if="user.role === 'attendee'"
+  to="/attendee-dashboard"
+  class="user-greeting link"
+>
+  Hi, {{ user.name }}
+</router-link>
+
+<router-link
+  v-else
+  to="/organizer-dashboard"
+  class="user-greeting link"
+>
+  Hi, {{ user.name }}
+</router-link>          <button class="nav-outline-btn" @click="handleLogout">Logout</button>
         </template>
 
         <template v-else>
@@ -72,3 +85,14 @@ onUnmounted(() => {
   window.removeEventListener('user-auth-changed', handleStorageChange)
 })
 </script>
+<style scoped>
+
+.user-greeting.link {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.user-greeting.link:hover {
+  opacity: 0.8;
+}
+</style>

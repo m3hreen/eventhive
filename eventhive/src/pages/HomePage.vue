@@ -38,36 +38,47 @@
 
       <div class="featured-grid">
         <div class="event-card" v-for="event in events" :key="event._id || event.id">
-  
+          <img
+            v-if="event.image"
+            :src="event.image"
+            :alt="event.title"
+            class="event-image"
+          />
 
-  <img
-    v-if="event.image"
-    :src="event.image"
-    :alt="event.title"
-    class="event-image"
-    
-  />
+          <div class="event-card-top">
+            <div class="event-card-main">
+              <h3>{{ event.title }}</h3>
+              <span class="category-badge">{{ event.category }}</span>
+            </div>
 
-  <div class="event-card-top">
-    <div class="event-card-main">
-      <h3>{{ event.title }}</h3>
-      <span class="category-badge">{{ event.category }}</span>
-    </div>
+            <div class="date-pill">
+              {{ event.date }}
+            </div>
+          </div>
 
-    <div class="date-pill">
-      {{ event.date }}
-    </div>
-  </div>
+          <p class="event-location">{{ event.location }}</p>
 
-  <p class="event-location">{{ event.location }}</p>
-  <p class="event-description" v-if="event.description">
-    {{ event.description }}
-  </p>
+          <p class="event-description" v-if="event.description">
+            {{ event.description }}
+          </p>
 
-  <router-link :to="`/event/${event._id || event.id}`" class="primary-btn small-btn">
-  View Details
-</router-link>
-</div>
+          <div class="card-actions">
+            <router-link
+              :to="`/event/${event._id || event.id}`"
+              class="primary-btn small-btn"
+            >
+              View Details
+            </router-link>
+
+            <button
+              v-if="currentUser && currentUser.role === 'attendee'"
+              class="secondary-btn small-btn"
+              @click="saveEvent(event._id || event.id)"
+            >
+              Save
+            </button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -79,45 +90,42 @@
         </div>
       </div>
     </section>
-    <section class="featured-section">
-  <h2>Community Suggestions</h2>
 
-  <div class="featured-grid">
-    <div
-      class="event-card"
-      v-for="s in suggestions"
-      :key="s._id"
-    >
-      <div class="event-card-top">
-        <div>
-          <h3>{{ s.title }}</h3>
-          <span class="category-badge">{{ s.category }}</span>
+    <section class="featured-section">
+      <h2>Community Suggestions</h2>
+
+      <div class="featured-grid">
+        <div class="event-card" v-for="s in suggestions" :key="s._id">
+          <div class="event-card-top">
+            <div>
+              <h3>{{ s.title }}</h3>
+              <span class="category-badge">{{ s.category }}</span>
+            </div>
+          </div>
+
+          <p class="event-location">
+            {{ s.location || 'Any location' }}
+          </p>
+
+          <p class="event-description">
+            {{ s.details }}
+          </p>
+
+          <div class="like-row">
+            <button
+              class="secondary-btn small-btn"
+              @click="likeSuggestion(s._id)"
+            >
+              👍 Like
+            </button>
+
+            <span class="like-count">
+              {{ s.likes || 0 }} likes
+            </span>
+          </div>
         </div>
       </div>
-
-      <p class="event-location">
-        {{ s.location || 'Any location' }}
-      </p>
-
-      <p class="event-description">
-        {{ s.details }}
-      </p>
-
-      <div class="like-row">
-        <button
-          class="secondary-btn small-btn"
-          @click="likeSuggestion(s._id)"
-        >
-          👍 Like
-        </button>
-
-        <span class="like-count">
-          {{ s.likes || 0 }} likes
-        </span>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
     <section class="how-it-works">
       <h2>How It Works</h2>
@@ -166,13 +174,39 @@ const categories = [
   'Conferences'
 ]
 
+async function loadEvents() {
+  try {
+    const res = await fetch('http://localhost:5001/api/events')
+    const data = await res.json()
+
+    if (!res.ok) {
+      console.error(data.message || 'Failed to load events')
+      events.value = []
+      return
+    }
+
+    events.value = data
+  } catch (error) {
+    console.error('Error loading events:', error)
+    events.value = []
+  }
+}
+
 async function loadSuggestions() {
   try {
     const res = await fetch('http://localhost:5001/api/suggestions')
     const data = await res.json()
+
+    if (!res.ok) {
+      console.error(data.message || 'Failed to load suggestions')
+      suggestions.value = []
+      return
+    }
+
     suggestions.value = data
   } catch (e) {
     console.error('suggestions error', e)
+    suggestions.value = []
   }
 }
 
@@ -181,17 +215,64 @@ async function likeSuggestion(id) {
     const savedUser = localStorage.getItem('eventhiveUser')
     const user = savedUser ? JSON.parse(savedUser) : null
 
-    if (!user?.email) return
+    if (!user?.email) {
+      alert('Please log in first.')
+      return
+    }
 
-    await fetch(`http://localhost:5001/api/suggestions/${id}/like`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: user.email })
-    })
+    const response = await fetch(
+      `http://localhost:5001/api/suggestions/${id}/like`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email })
+      }
+    )
 
-    loadSuggestions()
+    const data = await response.json()
+
+    if (!response.ok) {
+      alert(data.message || 'Could not like suggestion.')
+      return
+    }
+
+    await loadSuggestions()
   } catch (e) {
     console.error('like error', e)
+    alert('There was a connection error.')
+  }
+}
+
+async function saveEvent(eventId) {
+  try {
+    const savedUser = localStorage.getItem('eventhiveUser')
+    const user = savedUser ? JSON.parse(savedUser) : null
+
+    if (!user?.email) {
+      alert('Please log in first.')
+      return
+    }
+
+    const response = await fetch(
+      `http://localhost:5001/api/events/${eventId}/save`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email })
+      }
+    )
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      alert(data.message || 'Could not save event.')
+      return
+    }
+
+    alert('Event saved!')
+  } catch (error) {
+    console.error('Save event error:', error)
+    alert('There was a connection error.')
   }
 }
 
@@ -199,17 +280,11 @@ onMounted(async () => {
   const savedUser = localStorage.getItem('eventhiveUser')
   currentUser.value = savedUser ? JSON.parse(savedUser) : null
 
-  try {
-    const res = await fetch('http://localhost:5001/api/events')
-    const data = await res.json()
-    events.value = data
-  } catch (error) {
-    events.value = []
-  }
-
-  loadSuggestions()
+  await loadEvents()
+  await loadSuggestions()
 })
 </script>
+
 <style scoped>
 .home-page {
   min-height: 100vh;
@@ -469,6 +544,12 @@ onMounted(async () => {
   font-size: 15px;
 }
 
+.card-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 .categories-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -491,6 +572,18 @@ onMounted(async () => {
 .category-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 16px 32px rgba(72, 59, 102, 0.08);
+}
+
+.like-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.like-count {
+  font-weight: 600;
+  color: #555;
 }
 
 .steps-grid {
@@ -518,17 +611,6 @@ onMounted(async () => {
   line-height: 1.6;
   color: #5b6475;
   margin: 0;
-}
-.like-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 10px;
-}
-
-.like-count {
-  font-weight: 600;
-  color: #555;
 }
 
 @media (max-width: 960px) {
@@ -581,16 +663,5 @@ onMounted(async () => {
     flex-direction: column;
     gap: 12px;
   }
-  .like-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 10px;
-}
-
-.like-count {
-  font-weight: 600;
-  color: #555;
-}
 }
 </style>

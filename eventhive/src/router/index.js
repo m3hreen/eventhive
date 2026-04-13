@@ -16,6 +16,7 @@ const routes = [
   { path: '/', name: 'Home', component: HomePage },
   { path: '/login', name: 'Login', component: LoginPage },
   { path: '/signup', name: 'Signup', component: SignupPage },
+
   {
     path: '/attendee-dashboard',
     name: 'AttendeeDashboard',
@@ -72,7 +73,14 @@ const routes = [
   {
     path: '/my-suggestions',
     name: 'MySuggestions',
-    component: () => import('../pages/MySuggestionsPage.vue')
+    component: () => import('../pages/MySuggestionsPage.vue'),
+    meta: { requiresAuth: true, role: 'attendee' }
+  },
+  {
+    path: '/saved-events',
+    name: 'SavedEvents',
+    component: () => import('../pages/SavedEventsPage.vue'),
+    meta: { requiresAuth: true, role: 'attendee' }
   }
 ]
 

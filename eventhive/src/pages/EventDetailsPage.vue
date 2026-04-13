@@ -15,6 +15,11 @@
   
         <p class="event-location"><strong>Location:</strong> {{ event.location }}</p>
         <p class="event-description">{{ event.description }}</p>
+        <div class="save-row">
+  <button class="save-btn" @click="toggleSave">
+    {{ isSaved ? '★ Saved' : '☆ Save Event' }}
+  </button>
+</div>
   
         <div class="rsvp-card">
           <h2>RSVP to this event</h2>
@@ -46,7 +51,7 @@
   <script setup>
   import { onMounted, reactive, ref } from 'vue'
   import { useRoute } from 'vue-router'
-  
+  const isSaved = ref(false)
   const route = useRoute()
   
   const event = ref(null)
@@ -60,7 +65,47 @@
     email: '',
     status: ''
   })
-  
+  async function toggleSave() {
+  try {
+    const savedUser = localStorage.getItem('eventhiveUser')
+    const user = savedUser ? JSON.parse(savedUser) : null
+
+    if (!user?.email) return
+
+    const method = isSaved.value ? 'DELETE' : 'POST'
+
+    await fetch(
+      `http://localhost:5001/api/events/${event.value._id}/save`,
+      {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email })
+      }
+    )
+
+    isSaved.value = !isSaved.value
+  } catch (e) {
+    console.error(e)
+  }
+}
+  async function checkSaved() {
+  try {
+    const savedUser = localStorage.getItem('eventhiveUser')
+    const user = savedUser ? JSON.parse(savedUser) : null
+
+    if (!user?.email) return
+
+    const res = await fetch(
+      `http://localhost:5001/api/saved-events?email=${user.email}`
+    )
+
+    const data = await res.json()
+
+    isSaved.value = data.some(e => e.eventId === event.value._id)
+  } catch (e) {
+    console.error(e)
+  }
+}
   async function fetchEvent() {
     try {
       pageLoading.value = true
@@ -89,6 +134,7 @@
     } finally {
       pageLoading.value = false
     }
+    await checkSaved()
   }
   
   async function submitRsvp() {
@@ -254,6 +300,24 @@
     color: #5b6475;
     font-size: 18px;
   }
+  .save-row {
+  margin-top: 14px;
+}
+
+.save-btn {
+  background: #fff;
+  border: 2px solid #8b6ec7;
+  color: #8b6ec7;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background: #8b6ec7;
+  color: white;
+}
   
   @media (max-width: 768px) {
     .event-header {

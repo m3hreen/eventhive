@@ -1,10 +1,18 @@
 <template>
   <main class="dashboard-page">
     <div class="dashboard-container">
-      <h1>Organizer Dashboard</h1>
-      <p class="dashboard-subtitle">
-        Manage your events, guests, attendance insights, and attendee suggestions.
-      </p>
+
+      <section class="dashboard-hero">
+        <div class="hero-text">
+          <p class="eyebrow">Organizer Dashboard</p>
+          <h1>Understand what attendees want</h1>
+          <p class="dashboard-subtitle">
+            Review suggestions, track likes, and identify the best events to create next.
+          </p>
+        </div>
+
+        <div class="hero-image"></div>
+      </section>
 
       <div class="dashboard-grid">
         <div class="dashboard-card">
@@ -29,15 +37,20 @@
       </div>
 
       <div class="dashboard-section" v-if="stats.mostLiked">
-        <h2>Most Liked Suggestion</h2>
+        <h2>Most Requested Event</h2>
+
         <div class="suggestion-highlight">
           <h3>{{ stats.mostLiked.title }}</h3>
           <span class="category-badge">{{ stats.mostLiked.category }}</span>
+
           <p><strong>Location:</strong> {{ stats.mostLiked.location || 'Any location' }}</p>
           <p><strong>Preferred Date:</strong> {{ stats.mostLiked.preferredDate || 'Flexible' }}</p>
-          <p><strong>Details:</strong> {{ stats.mostLiked.details }}</p>
-          <p><strong>Likes:</strong> {{ stats.mostLiked.likes || 0 }}</p>
-          <p><strong>Suggested by:</strong> {{ stats.mostLiked.submittedByName || 'Anonymous' }}</p>
+          <p>{{ stats.mostLiked.details }}</p>
+
+          <div class="suggestion-footer">
+            <span>{{ stats.mostLiked.likes || 0 }} likes</span>
+            <span>{{ stats.mostLiked.submittedByName || 'Anonymous' }}</span>
+          </div>
         </div>
       </div>
 
@@ -62,25 +75,26 @@
             </div>
 
             <p class="suggestion-location">
-              <strong>Location:</strong>
-              {{ suggestion.location || 'Open to any location' }}
+              {{ suggestion.location || 'Open location' }}
             </p>
 
-            <p class="suggestion-details">{{ suggestion.details }}</p>
+            <p class="suggestion-details">
+              {{ suggestion.details }}
+            </p>
 
             <div class="suggestion-footer">
-              <span><strong>Likes:</strong> {{ suggestion.likes || 0 }}</span>
-              <span><strong>By:</strong> {{ suggestion.submittedByName || 'Anonymous' }}</span>
+              <span>{{ suggestion.likes || 0 }} likes</span>
+              <span>{{ suggestion.submittedByName || 'Anonymous' }}</span>
             </div>
           </div>
         </div>
 
         <p v-else class="empty-state">No suggestions yet.</p>
       </div>
+
     </div>
   </main>
 </template>
-
 <script setup>
 import { onMounted, ref } from 'vue'
 
@@ -126,7 +140,37 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.dashboard-page {
+.dashboard-hero {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 28px;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.hero-text {
+  background: rgba(255,255,255,.75);
+  border-radius: 30px;
+  padding: 30px;
+  border: 1px solid rgba(166,134,210,.14);
+}
+
+.eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+  color: #8b6ec7;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.hero-image {
+  min-height: 260px;
+  border-radius: 28px;
+  background:
+  linear-gradient(rgba(139,110,199,.15),rgba(247,236,141,.05)),
+  url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d')
+  center/cover;
+}.dashboard-page {
   min-height: 100vh;
   background: linear-gradient(180deg, #f8f5ef 0%, #f6f1ea 100%);
   padding: 48px 24px 72px;

@@ -370,6 +370,51 @@ router.post('/suggestions', async (req, res) => {
   }
 })
 
+router.get('/suggestions/stats', async (req, res) => {
+  try {
+    const db = await connectDB()
+    const suggestionsCollection = db.collection('suggestions')
+
+    const suggestions = await suggestionsCollection.find({}).toArray()
+
+    const totalSuggestions = suggestions.length
+    const totalLikes = suggestions.reduce((sum, s) => sum + (s.likes || 0), 0)
+
+    const sortedByLikes = [...suggestions].sort((a, b) => (b.likes || 0) - (a.likes || 0))
+    const mostLiked = sortedByLikes[0] || null
+
+    const categoryCounts = {}
+    const locationCounts = {}
+
+    suggestions.forEach(s => {
+      if (s.category) {
+        categoryCounts[s.category] = (categoryCounts[s.category] || 0) + 1
+      }
+
+      if (s.location) {
+        locationCounts[s.location] = (locationCounts[s.location] || 0) + 1
+      }
+    })
+
+    const topCategory =
+      Object.entries(categoryCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || null
+
+    const topLocation =
+      Object.entries(locationCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || null
+
+    res.status(200).json({
+      totalSuggestions,
+      totalLikes,
+      mostLiked,
+      topCategory,
+      topLocation
+    })
+  } catch (error) {
+    console.error('Suggestions stats error:', error)
+    res.status(500).json({ message: 'Server error fetching suggestion stats.' })
+  }
+})
+
 router.get('/suggestions', async (req, res) => {
   try {
     const { submittedBy, featured } = req.query
@@ -437,47 +482,133 @@ router.post('/suggestions/:id/like', async (req, res) => {
     res.status(500).json({ message: 'Server error while liking suggestion.' })
   }
 })
-router.get('/suggestions/stats', async (req, res) => {
+
+router.post('/events/:id/save', async (req, res) => {
   try {
+    const { id } = req.params
+    const { email } = req.body
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid event ID.' })
+    }
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required.' })
+    }
+
+    const normalizedEmail = email.trim().toLowerCase()
+
     const db = await connectDB()
-    const suggestionsCollection = db.collection('suggestions')
+    const savedCollection = db.collection('saved_events')
+    const eventsCollection = db.collection('events')
 
-    const suggestions = await suggestionsCollection.find({}).toArray()
+    const event = await eventsCollection.findOne({ _id: new ObjectId(id) })
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found.' })
+    }
 
-    const totalSuggestions = suggestions.length
-    const totalLikes = suggestions.reduce((sum, s) => sum + (s.likes || 0), 0)
-
-    const mostLiked = suggestions.sort((a, b) => (b.likes || 0) - (a.likes || 0))[0] || null
-
-    const categoryCounts = {}
-    const locationCounts = {}
-
-    suggestions.forEach(s => {
-      if (s.category) {
-        categoryCounts[s.category] = (categoryCounts[s.category] || 0) + 1
-      }
-
-      if (s.location) {
-        locationCounts[s.location] = (locationCounts[s.location] || 0) + 1
-      }
+    const existing = await savedCollection.findOne({
+      eventId: id,
+      email: normalizedEmail
     })
 
-    const topCategory =
-      Object.entries(categoryCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || null
+    if (existing) {
+      return res.status(400).json({ message: 'Event already saved.' })
+    }
 
-    const topLocation =
-      Object.entries(locationCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || null
-
-    res.json({
-      totalSuggestions,
-      totalLikes,
-      mostLiked,
-      topCategory,
-      topLocation
+    await savedCollection.insertOne({
+      eventId: id,
+      email: normalizedEmail,
+      createdAt: new Date()
     })
+
+    res.status(201).json({ message: 'Event saved successfully.' })
   } catch (error) {
-    console.error('Suggestions stats error:', error)
-    res.status(500).json({ message: 'Server error fetching suggestion stats' })
+    console.error('Save event error:', error)
+    res.status(500).json({ message: 'Server error while saving event.' })
+  }
+})
+
+router.delete('/events/:id/save', async (req, res) => {
+  try {
+    const { id } = req.params
+    const { email } = req.body
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid event ID.' })
+    }
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required.' })
+    }
+
+    const normalizedEmail = email.trim().toLowerCase()
+
+    const db = await connectDB()
+    const savedCollection = db.collection('saved_events')
+
+    const result = await savedCollection.deleteOne({
+      eventId: id,
+      email: normalizedEmail
+    })
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'Saved event not found.' })
+    }
+
+    res.status(200).json({ message: 'Event removed from saved events.' })
+  } catch (error) {
+    console.error('Unsave event error:', error)
+    res.status(500).json({ message: 'Server error while removing saved event.' })
+  }
+})
+
+router.get('/saved-events', async (req, res) => {
+  try {
+    const { email } = req.query
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required.' })
+    }
+
+    const normalizedEmail = email.trim().toLowerCase()
+
+    const db = await connectDB()
+    const savedCollection = db.collection('saved_events')
+    const eventsCollection = db.collection('events')
+
+    const savedDocs = await savedCollection
+      .find({ email: normalizedEmail })
+      .sort({ createdAt: -1 })
+      .toArray()
+
+    if (!savedDocs.length) {
+      return res.status(200).json([])
+    }
+
+    const validIds = savedDocs
+      .map(doc => doc.eventId)
+      .filter(id => ObjectId.isValid(id))
+      .map(id => new ObjectId(id))
+
+    if (!validIds.length) {
+      return res.status(200).json([])
+    }
+
+    const events = await eventsCollection
+      .find({ _id: { $in: validIds } })
+      .toArray()
+
+    const eventMap = new Map(events.map(event => [String(event._id), event]))
+
+    const orderedEvents = savedDocs
+      .map(doc => eventMap.get(doc.eventId))
+      .filter(Boolean)
+
+    res.status(200).json(orderedEvents)
+  } catch (error) {
+    console.error('Get saved events error:', error)
+    res.status(500).json({ message: 'Server error while fetching saved events.' })
   }
 })
 
