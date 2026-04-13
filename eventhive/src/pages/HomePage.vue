@@ -20,23 +20,25 @@
     <section class="search-preview">
       <div class="search-box">
         <input type="text" placeholder="Search events..." />
-        <select>
-          <option>All Categories</option>
-          <option>Music</option>
-          <option>Workshops</option>
-          <option>Networking</option>
-          <option>Sports</option>
+        <select id="categoryFilter">
+          <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
         </select>
-        <input type="date" />
-        <input type="text" placeholder="City" />
-        <button class="primary-btn">Search</button>
+        <input id="dateFilter" type="date" />
+        <input id="locationFilter" type="text" placeholder="City" />
+        <button id="filterBtn" class="primary-btn" @click="applyFilters">Search</button>
+        <button id="resetBtn" class="secondary-btn" type="button" @click="resetFilters">Reset</button>
       </div>
+
     </section>
 
     <section id="featured" class="featured-section">
       <h2>Featured Events</h2>
 
-      <div class="featured-grid">
+      <div v-if="loading" class="empty-state">
+       <p>Loading events…</p>
+     </div>
+
+      <div  v-else-if="events.length" class="featured-grid">
         <div class="event-card" v-for="event in events" :key="event._id || event.id">
           <img
             v-if="event.image"
@@ -48,7 +50,8 @@
           <div class="event-card-top">
             <div class="event-card-main">
               <h3>{{ event.title }}</h3>
-              <span class="category-badge">{{ event.category }}</span>
+              <span class="category-badge" @click="filterByCategory(event.category)"
+              style="cursor:pointer;" >{{ event.category }}</span>
             </div>
 
             <div class="date-pill">
@@ -80,13 +83,20 @@
           </div>
         </div>
       </div>
+
+      <div v-else class="empty-state">
+        <p>No events match your filters.</p>
+        <button class="secondary-btn" @click="resetFilters">Clear filters</button>
+      </div>
+
     </section>
 
     <section id="categories" class="categories-section">
       <h2>Browse by Category</h2>
       <div class="categories-grid">
-        <div class="category-card" v-for="category in categories" :key="category">
-          {{ category }}
+        <div class="category-card" v-for="category in categories" :key="category" :class="{ active: selectedCategory === category }" @click="filterByCategory(category)">
+          <span class="cat-label">{{ category }}</span>
+          <span class="cat-count">{{ countByCategory(category) }} events</span>
         </div>
       </div>
     </section>
@@ -149,10 +159,20 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue'
+import $ from 'jquery'
 
+const allEvents = ref([])
 const currentUser = ref(null)
 const events = ref([])
 const suggestions = ref([])
+const selectedCategory = ref('')
+const loading = ref(true)
+
+
+const filterCategory = ref('')
+const filterDate = ref('')
+const filterLocation = ref('')
+
 
 const createEventLink = computed(() => {
   if (currentUser.value?.role === 'organizer') return '/create-event'
@@ -174,21 +194,123 @@ const categories = [
   'Conferences'
 ]
 
+const activeFilters = computed(() => {
+ const chips = []
+ if (filterCategory.value) chips.push({ key: 'category', label: `Category: ${filterCategory.value}` })
+ if (filterDate.value) chips.push({ key: 'date', label: `Date: ${filterDate.value}` })
+ if (filterLocation.value) chips.push({ key: 'location', label: `Location: ${filterLocation.value}` })
+ return chips
+})
+
+const countByCategory = (cat) =>
+ allEvents.value.filter(e => (e.category || '').toLowerCase() === cat.toLowerCase()).length
+
+const applyFilters = () => {
+ const selCat = ($('#categoryFilter').val() || '').toString().trim().toLowerCase()
+ const selDate = ($('#dateFilter').val() || '').toString().trim()
+ const selLoc = ($('#locationFilter').val() || '').toString().trim().toLowerCase()
+
+
+ filterCategory.value = ($('#categoryFilter').val() || '').toString().trim()
+ filterDate.value = selDate
+ filterLocation.value = ($('#locationFilter').val() || '').toString().trim()
+
+
+ if (selectedCategory.value) {
+   $('#categoryFilter').val(selectedCategory.value)
+   filterCategory.value = selectedCategory.value
+ }
+
+
+ events.value = allEvents.value.filter(event => {
+   const evCat = (event.category || '').toLowerCase()
+   const evDate = (event.date || '').toString()
+   const evLoc = (event.location || '').toLowerCase()
+
+
+   const matchCat = !selCat || evCat === selCat
+   const matchDate = !selDate || evDate === selDate
+   const matchLoc = !selLoc || evLoc.includes(selLoc)
+
+
+   return matchCat && matchDate && matchLoc
+ })
+
+
+ $('.event-card').fadeOut(150, function () {
+   $(this).fadeIn(200)
+ })
+
+
+ $('html, body').animate(
+   { scrollTop: $('#featured').offset()?.top - 80 || 0 },
+   400
+ )
+}
+
+
+const resetFilters = () => {
+ selectedCategory.value = ''
+ filterCategory.value = ''
+ filterDate.value = ''
+ filterLocation.value = ''
+ $('#categoryFilter').val('')
+ $('#dateFilter').val('')
+ $('#locationFilter').val('')
+ events.value = allEvents.value
+
+
+ $('.event-card').hide().fadeIn(250)
+}
+
+
+const filterByCategory = (cat) => {
+ if (!cat) return
+ selectedCategory.value = cat
+ $('#categoryFilter').val(cat)
+ applyFilters()
+}
+
+
+const clearChip = (key) => {
+ if (key === 'category') {
+   selectedCategory.value = ''
+   filterCategory.value = ''
+   $('#categoryFilter').val('')
+ } else if (key === 'date') {
+   filterDate.value = ''
+   $('#dateFilter').val('')
+ } else if (key === 'location') {
+   filterLocation.value = ''
+   $('#locationFilter').val('')
+ }
+ applyFilters()
+}
+
+
 async function loadEvents() {
   try {
+    console.log('starting events fetch')
     const res = await fetch('http://localhost:5001/api/events')
+    console.log('got response', res.status)
     const data = await res.json()
+    console.log('got data', data)
 
     if (!res.ok) {
-      console.error(data.message || 'Failed to load events')
       events.value = []
+      allEvents.value = []
       return
     }
 
+    allEvents.value = data
     events.value = data
-  } catch (error) {
-    console.error('Error loading events:', error)
+  } catch (e) {
+    console.error('Error loading events:', e)
     events.value = []
+    allEvents.value = []
+  } finally {
+    console.log('finished loadEvents')
+    loading.value = false
   }
 }
 
@@ -277,11 +399,16 @@ async function saveEvent(eventId) {
 }
 
 onMounted(async () => {
-  const savedUser = localStorage.getItem('eventhiveUser')
-  currentUser.value = savedUser ? JSON.parse(savedUser) : null
+  currentUser.value = JSON.parse(localStorage.getItem('eventhiveUser') || 'null')
 
-  await loadEvents()
-  await loadSuggestions()
+  await Promise.all([
+    loadEvents(),
+    loadSuggestions()
+  ])
+
+  $('#locationFilter').on('keydown', function (e) {
+    if (e.key === 'Enter') $('#filterBtn').trigger('click')
+  })
 })
 </script>
 
@@ -567,6 +694,12 @@ onMounted(async () => {
   color: #243047;
   box-shadow: 0 12px 28px rgba(72, 59, 102, 0.05);
   transition: transform 0.18s ease, box-shadow 0.18s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
 }
 
 .category-card:hover {
