@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar">
     <div class="nav-container">
-      <router-link to="/" class="logo">EventSphere</router-link>
+      <router-link to="/" class="logo">EventHive</router-link>
 
       <div class="nav-links">
         <router-link to="/">Home</router-link>
@@ -36,14 +36,14 @@ const router = useRouter()
 const currentUser = ref(null)
 
 function loadUser() {
-  const savedUser = localStorage.getItem('eventsphereUser')
+  const savedUser = localStorage.getItem('eventhiveUser')
   currentUser.value = savedUser ? JSON.parse(savedUser) : null
 }
 
 const user = computed(() => currentUser.value)
 
 function handleLogout() {
-  localStorage.removeItem('eventsphereUser')
+  localStorage.removeItem('eventhiveUser')
   currentUser.value = null
   router.push('/login')
 }

@@ -3,7 +3,7 @@
     <div class="auth-container">
       <div class="auth-left">
         <h1>Create your account</h1>
-        <p>Join EventSphere as an attendee or organizer and start exploring events today.</p>
+        <p>Join EventHive as an attendee or organizer and start exploring events today.</p>
       </div>
 
       <div class="auth-right">

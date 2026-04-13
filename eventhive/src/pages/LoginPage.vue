@@ -3,7 +3,7 @@
     <div class="auth-container">
       <div class="auth-left">
         <h1>Welcome back</h1>
-        <p>Log in to manage your events, RSVPs, and tickets with EventSphere.</p>
+        <p>Log in to manage your events, RSVPs, and tickets with EventHive.</p>
       </div>
 
       <div class="auth-right">
@@ -99,7 +99,7 @@ async function handleLogin() {
       return
     }
 
-    localStorage.setItem('eventsphereUser', JSON.stringify(data.user))
+    localStorage.setItem('eventhiveUser', JSON.stringify(data.user))
     window.dispatchEvent(new Event('user-auth-changed'))
 
     message.value = 'Login successful. Redirecting...'

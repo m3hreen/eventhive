@@ -17,7 +17,7 @@ async function connectDB() {
   if (db) return db;
 
   await client.connect();
-  db = client.db('eventsphere');
+  db = client.db('eventhive');
   console.log('Connected to MongoDB');
   return db;
 }

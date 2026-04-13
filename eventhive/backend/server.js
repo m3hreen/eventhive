@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('EventSphere backend is running');
+  res.send('EventHive backend is running');
 });
 
 app.use('/api', authRoutes);
