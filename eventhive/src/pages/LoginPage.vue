@@ -109,13 +109,7 @@ async function handleLogin() {
     form.remember = false
 
     setTimeout(() => {
-      if (data.user.role === 'attendee') {
-        router.push('/attendee-dashboard')
-      } else if (data.user.role === 'organizer') {
-        router.push('/organizer-dashboard')
-      } else {
-        router.push('/')
-      }
+    router.push('/home')
     }, 1200)
   } catch (error) {
     errorMessage.value = 'Could not connect to the server.'

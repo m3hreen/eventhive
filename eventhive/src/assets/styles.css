@@ -19,7 +19,7 @@ a {
   width: 100%;
   background: #8b6ec7;
   color: white;
-  padding: 20px 32px;
+  padding: 10px 32px;
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -71,6 +71,12 @@ a {
   font-weight: 500;
 }
 
+.nav-link:hover {
+  color: #f4c174e6;
+  font-size: 1rem;
+  font-weight: 500
+}
+
 .user-greeting {
   color: #f5f4ed;
   font-size: 1rem;
@@ -84,33 +90,37 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 54px;
-  padding: 0 24px;
+  height: 38px;
+  padding: 0px 12px;
   border-radius: 14px;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 500;
   cursor: pointer;
   text-decoration: none;
   border: none;
 }
 
 .nav-outline-btn {
-  background: transparent;
-  border: 2px solid rgba(245, 244, 237, 0.7);
+  background: rgba(110, 77, 177, 0.678);
+  border: 2px solid rgba(111, 77, 177, 0.85);
   color: #f5f4ed;
 }
 
 .nav-fill-btn {
-  background: #f0b322;
-  color: #f5f4ed;
+  background: #f4c174e6;
+  border: 2px solid #c8a46a;
+  color:#ffffff;
+;
 }
 
 .nav-outline-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(110, 77, 177, 0.242);
+  border: 2px solid rgba(110, 77, 177, 0.212)
 }
 
 .nav-fill-btn:hover {
-  filter: brightness(0.98);
+  background: #f4c17446;
+  border: 2px solid #c8a46a51;
 }
 
 .hero {
@@ -744,4 +754,14 @@ button:disabled {
   .auth-left h1 {
     font-size: 1.8rem;
   }
+}
+
+.eyebrow-wrapper {
+  display: inline-block;
+  
+  background: #fdf3dc;
+  padding: 10px 12px;
+  border-radius: 28px;
+  box-shadow: 0 8px 20px rgba(72, 59, 102, 0.08);
+  margin-bottom: 30px;
 }

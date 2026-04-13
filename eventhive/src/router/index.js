@@ -11,9 +11,11 @@ import EventDetailsPage from '../pages/EventDetailsPage.vue'
 import GuestListPage from '../pages/GuestListPage.vue'
 import InboxPage from '../pages/InboxPage.vue'
 import SuggestionsPage from '../pages/SuggestionsPage.vue'
+import LandingPage from '../pages/LandingPage.vue'
 
 const routes = [
-  { path: '/', name: 'Home', component: HomePage },
+  { path: '/', name: 'Landing', component: LandingPage },
+  { path: '/home', name: 'Home', component: HomePage, meta: { requiresAuth: true } }, // requires login
   { path: '/login', name: 'Login', component: LoginPage },
   { path: '/signup', name: 'Signup', component: SignupPage },
 
@@ -93,14 +95,19 @@ router.beforeEach((to, from, next) => {
   const savedUser = localStorage.getItem('eventhiveUser')
   const user = savedUser ? JSON.parse(savedUser) : null
 
+  // Redirect logged-in users away from landing/login/signup
+  if (user && (to.path === '/' || to.path === '/login' || to.path === '/signup')) {
+    return next('/home')
+  }
+
+  // Protect authenticated routes
   if (to.meta.requiresAuth && !user) {
     return next('/login')
   }
 
+  // Block users from routes meant for another role
   if (to.meta.role && user && to.meta.role !== user.role) {
-    if (user.role === 'attendee') return next('/attendee-dashboard')
-    if (user.role === 'organizer') return next('/organizer-dashboard')
-    return next('/')
+    return next('/home')
   }
 
   next()
