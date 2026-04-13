@@ -19,8 +19,12 @@
 
     <section class="search-preview">
       <div class="search-box">
-        <input type="text" placeholder="Search events..." />
-        <select id="categoryFilter">
+        <input
+  type="text"
+  placeholder="Search events..."
+  v-model="searchQuery"
+  @input="applyFilters"
+/>      <select id="categoryFilter">
           <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
         </select>
         <input id="dateFilter" type="date" />
@@ -167,7 +171,7 @@ const events = ref([])
 const suggestions = ref([])
 const selectedCategory = ref('')
 const loading = ref(true)
-
+const searchQuery = ref('')
 
 const filterCategory = ref('')
 const filterDate = ref('')
@@ -217,20 +221,23 @@ const applyFilters = () => {
 
  selectedCategory.value = filterCategory.value
 
- events.value = allEvents.value.filter(event => {
-   const evCat = (event.category || '').toLowerCase()
-   const evDate = (event.date || '').toString()
-   const evLoc = (event.location || '').toLowerCase()
+ const search = searchQuery.value.toLowerCase()
 
+events.value = allEvents.value.filter(event => {
+  const evCat = (event.category || '').toLowerCase()
+  const evDate = (event.date || '').toString()
+  const evLoc = (event.location || '').toLowerCase()
 
-   const matchCat = !selCat || evCat === selCat
-   const matchDate = !selDate || evDate === selDate
-   const matchLoc = !selLoc || evLoc.includes(selLoc)
+  const matchSearch =
+    !search ||
+    event.title?.toLowerCase().includes(search)
 
+  const matchCat = !selCat || evCat === selCat
+  const matchDate = !selDate || evDate === selDate
+  const matchLoc = !selLoc || evLoc.includes(selLoc)
 
-   return matchCat && matchDate && matchLoc
- })
-
+  return matchSearch && matchCat && matchDate && matchLoc
+})
 
  $('.event-card').fadeOut(150, function () {
    $(this).fadeIn(200)
@@ -249,13 +256,13 @@ const resetFilters = () => {
  filterCategory.value = ''
  filterDate.value = ''
  filterLocation.value = ''
+ searchQuery.value = ''
+
  $('#categoryFilter').val('')
  $('#dateFilter').val('')
  $('#locationFilter').val('')
+
  events.value = allEvents.value
-
-
- $('.event-card').hide().fadeIn(250)
 }
 
 
