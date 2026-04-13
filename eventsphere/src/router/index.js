@@ -2,6 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '../pages/HomePage.vue'
 import LoginPage from '../pages/LoginPage.vue'
 import SignupPage from '../pages/SignupPage.vue'
+import CreateEventsPage from '../pages/CreateEventsPage.vue'
+import EditEventsPage from '../pages/EditEventsPage.vue'
+import MyEventsPage from '../pages/MyEventsPage.vue'
 import AttendeeDashboard from '../pages/AttendeeDashboard.vue'
 import OrganizerDashboard from '../pages/OrganizerDashboard.vue'
 
@@ -20,6 +23,22 @@ const routes = [
     path: '/signup',
     name: 'Signup',
     component: SignupPage
+  },
+  {
+    path: '/events/create',
+    name: 'CreateEvent',
+    component: CreateEventsPage
+  },
+  {
+    path: '/events',
+    name: 'MyEvents',
+    component: MyEventsPage
+  },
+  {
+    path: '/events/edit/:id',
+    name: 'EditEvent',
+    component: EditEventsPage,
+    props: true
   },
   {
     path: '/attendee-dashboard',

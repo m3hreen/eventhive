@@ -9,8 +9,8 @@
           </p>
   
           <div class="hero-buttons">
-            <button class="primary-btn">Explore Events</button>
-            <button class="secondary-btn">Create an Event</button>
+            <router-link to="/events" class="primary-btn">Explore Events</router-link>
+            <router-link to="/events/create" class="secondary-btn">Create an Event</router-link>
           </div>
         </div>
       </section>
@@ -34,7 +34,7 @@
       <section id="featured" class="featured-section">
         <h2>Featured Events</h2>
         <div class="event-grid">
-          <div class="event-card" v-for="event in featuredEvents" :key="event.id">
+          <div class="event-card" v-for="event in events" :key="event.id">
             <img :src="event.image" :alt="event.title" />
             <div class="event-card-body">
               <h3>{{ event.title }}</h3>
@@ -75,37 +75,26 @@
     </main>
   </template>
   
-  <script setup>
-  const featuredEvents = [
-    {
-      id: 1,
-      title: 'Tech Networking Night',
-      date: 'April 20, 2026',
-      location: 'Toronto, ON',
-      image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=900&q=80'
-    },
-    {
-      id: 2,
-      title: 'Live Music Festival',
-      date: 'May 5, 2026',
-      location: 'Mississauga, ON',
-      image: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=900&q=80'
-    },
-    {
-      id: 3,
-      title: 'Startup Workshop',
-      date: 'May 15, 2026',
-      location: 'North York, ON',
-      image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80'
-    }
-  ]
-  
-  const categories = [
-    'Music',
-    'Workshops',
-    'Networking',
-    'Sports',
-    'Community',
-    'Conferences'
-  ]
-  </script>
+<script setup>
+import { ref, onMounted } from 'vue'
+
+const events = ref([])
+
+const categories = [
+  'Music',
+  'Workshops',
+  'Networking',
+  'Sports',
+  'Community',
+  'Conferences'
+]
+
+onMounted(async () => {
+  try {
+    const res = await fetch('http://localhost:3001/api/events')
+    events.value = await res.json()
+  } catch (error) {
+    console.error('Error loading events:', error)
+  }
+})
+</script>
