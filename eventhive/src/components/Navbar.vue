@@ -1,8 +1,13 @@
 <template>
   <nav class="navbar">
-    <div class="nav-container">
-      <router-link to="/" class="logo">EventHive</router-link>
+    <div class="nav-left">
+      <router-link to="/" class="logo-container">
+        <img :src="logo" alt="EventHive Logo" class="logo" />
+        <span class="logo-text">EventHive</span>
+      </router-link>
+    </div>
 
+    <div class="nav-container">
       <div class="nav-links">
         <router-link to="/">Home</router-link>
 
@@ -31,6 +36,8 @@
 <script setup>
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import logo from '../assets/logo.svg'
+
 
 const router = useRouter()
 const currentUser = ref(null)

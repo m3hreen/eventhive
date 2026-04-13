@@ -17,7 +17,7 @@ a {
 
 .navbar {
   width: 100%;
-  background: #0f172a;
+  background: #825a99;
   color: white;
   padding: 18px 40px;
   position: sticky;
@@ -31,15 +31,47 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: nowrap;
+  gap: 20px;
 }
 
-.logo {
-  font-size: 1.6rem;
+.nav-left {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.logo-text {
+  font-size: 1.4rem;
   font-weight: bold;
   color: white;
 }
 
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: white;
+}
+
+.logo-img {
+  height: 38px;
+  width: auto;
+  display: block;
+}
+
+.logo {
+  height: 40px;
+  width: auto;
+}
+
+.logo-container:hover {
+  opacity: 0.8;
+}
+
 .nav-links {
+  margin-left: auto;
   display: flex;
   align-items: center;
   gap: 18px;
@@ -56,7 +88,7 @@ a {
 }
 
 .nav-btn.primary {
-  background: #7c3aed;
+  background: #e6ac1c;
   color: white;
 }
 
@@ -457,7 +489,7 @@ button:disabled {
   }
 
   .nav-container {
-    flex-direction: column;
+    flex-direction: row;
     gap: 15px;
   }
 
