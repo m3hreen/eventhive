@@ -74,7 +74,7 @@
 
     const method = isSaved.value ? 'DELETE' : 'POST'
 
-    await fetch(
+    const response = await fetch(
       `http://localhost:5001/api/events/${event.value._id}/save`,
       {
         method,
@@ -83,25 +83,29 @@
       }
     )
 
+    if (!response.ok) return
+
     isSaved.value = !isSaved.value
   } catch (e) {
     console.error(e)
   }
 }
-  async function checkSaved() {
+async function checkSaved() {
   try {
     const savedUser = localStorage.getItem('eventhiveUser')
     const user = savedUser ? JSON.parse(savedUser) : null
 
-    if (!user?.email) return
+    if (!user?.email || !event.value?._id) return
 
     const res = await fetch(
-      `http://localhost:5001/api/saved-events?email=${user.email}`
+      `http://localhost:5001/api/saved-events?email=${encodeURIComponent(user.email)}`
     )
 
     const data = await res.json()
 
-    isSaved.value = data.some(e => e.eventId === event.value._id)
+    isSaved.value = data.some(
+      e => String(e._id) === String(event.value._id)
+    )
   } catch (e) {
     console.error(e)
   }

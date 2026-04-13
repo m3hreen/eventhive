@@ -74,12 +74,12 @@
             </router-link>
 
             <button
-              v-if="currentUser && currentUser.role === 'attendee'"
-              class="secondary-btn small-btn"
-              @click="saveEvent(event._id || event.id)"
-            >
-              Save
-            </button>
+  v-if="currentUser && currentUser.email !== event.createdBy"
+  class="secondary-btn small-btn"
+  @click="saveEvent(event._id || event.id)"
+>
+  Save
+</button>
           </div>
         </div>
       </div>

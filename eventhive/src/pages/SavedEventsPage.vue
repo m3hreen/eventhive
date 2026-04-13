@@ -1,124 +1,339 @@
 <template>
-    <main class="saved-page">
-      <div class="saved-container">
-        <h1>Saved Events</h1>
-        <p class="subtitle">Events you bookmarked for later</p>
-  
-        <div v-if="events.length" class="events-grid">
-          <div
-            class="event-card"
-            v-for="event in events"
-            :key="event._id"
-          >
-            <img
-              v-if="event.image"
-              :src="event.image"
-              class="event-image"
-            />
-  
-            <h3>{{ event.title }}</h3>
+  <main class="saved-page">
+    <div class="saved-container">
+      <div class="saved-header">
+        <div>
+          <p class="eyebrow">Saved Events</p>
+          <h1>Your saved picks</h1>
+          <p class="subtitle">
+            Keep track of events you want to come back to later.
+          </p>
+        </div>
+
+        <router-link to="/attendee-dashboard" class="back-btn">
+          Back to Dashboard
+        </router-link>
+      </div>
+
+      <div v-if="events.length" class="events-grid">
+        <div
+          class="event-card"
+          v-for="event in events"
+          :key="event._id"
+        >
+          <img
+            v-if="event.image"
+            :src="event.image"
+            :alt="event.title"
+            class="event-image"
+          />
+          <div v-else class="event-image fallback-image"></div>
+
+          <div class="event-content">
             <span class="category-badge">{{ event.category }}</span>
-  
-            <p class="event-location">{{ event.location }}</p>
-            <p class="event-description">{{ event.description }}</p>
-  
-            <router-link
-              :to="`/event/${event._id}`"
-              class="view-btn"
-            >
-              View Event
-            </router-link>
+            <h3>{{ event.title }}</h3>
+
+            <p class="event-meta">
+              <strong>Date:</strong> {{ formatDate(event.date) }}
+            </p>
+            <p class="event-meta">
+              <strong>Location:</strong> {{ event.location || 'TBA' }}
+            </p>
+
+            <p class="event-description">
+              {{ event.description }}
+            </p>
+
+            <div class="card-actions">
+              <router-link
+                :to="`/event/${event._id}`"
+                class="view-btn"
+              >
+                View Event
+              </router-link>
+
+              <button
+                class="remove-btn"
+                @click="removeSavedEvent(event._id)"
+              >
+                Remove
+              </button>
+            </div>
           </div>
         </div>
-  
-        <p v-else class="empty">
-          No saved events yet
-        </p>
       </div>
-    </main>
-  </template>
-  
-  <script setup>
-  import { onMounted, ref } from 'vue'
-  
-  const events = ref([])
-  
-  async function loadSaved() {
-    try {
-      const savedUser = localStorage.getItem('eventhiveUser')
-      const user = savedUser ? JSON.parse(savedUser) : null
-  
-      if (!user?.email) return
-  
-      const res = await fetch(
-  `http://localhost:5001/api/saved-events?email=${encodeURIComponent(user.email)}`
-)
-  
-      const data = await res.json()
-      events.value = data
-    } catch (e) {
-      console.error(e)
+
+      <div v-else class="empty-shell">
+        <div class="empty-card">
+          <h2>No saved events yet</h2>
+          <p>
+            Start exploring events and save the ones you want to revisit.
+          </p>
+          <router-link to="/" class="view-btn">
+            Browse Events
+          </router-link>
+        </div>
+      </div>
+    </div>
+  </main>
+</template>
+
+<script setup>
+import { onMounted, ref } from 'vue'
+
+const events = ref([])
+
+function getCurrentUser() {
+  const savedUser = localStorage.getItem('eventhiveUser')
+  return savedUser ? JSON.parse(savedUser) : null
+}
+
+function formatDate(value) {
+  if (!value) return 'No date'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+  return date.toLocaleDateString()
+}
+
+async function loadSaved() {
+  try {
+    const user = getCurrentUser()
+
+    if (!user?.email) {
+      events.value = []
+      return
     }
+
+    const res = await fetch(
+      `http://localhost:5001/api/saved-events?email=${encodeURIComponent(user.email)}`
+    )
+
+    const data = await res.json()
+
+    if (!res.ok) {
+      console.error(data.message || 'Failed to load saved events.')
+      events.value = []
+      return
+    }
+
+    events.value = data
+  } catch (e) {
+    console.error('Load saved events error:', e)
+    events.value = []
   }
-  
-  onMounted(() => {
-    loadSaved()
-  })
-  </script>
-  
-  <style scoped>
-  .saved-page {
-    min-height: 100vh;
-    padding: 48px 24px;
-    background: linear-gradient(180deg,#f8f5ef,#f6f1ea);
+}
+
+async function removeSavedEvent(eventId) {
+  try {
+    const user = getCurrentUser()
+
+    if (!user?.email) return
+
+    const res = await fetch(
+      `http://localhost:5001/api/events/${eventId}/save`,
+      {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email })
+      }
+    )
+
+    const data = await res.json()
+
+    if (!res.ok) {
+      alert(data.message || 'Could not remove saved event.')
+      return
+    }
+
+    events.value = events.value.filter(event => event._id !== eventId)
+  } catch (e) {
+    console.error('Remove saved event error:', e)
+    alert('There was a connection error.')
   }
-  
-  .saved-container {
-    max-width: 1180px;
-    margin: auto;
+}
+
+onMounted(() => {
+  loadSaved()
+})
+</script>
+
+<style scoped>
+.saved-page {
+  min-height: 100vh;
+  padding: 48px 24px 72px;
+  background: linear-gradient(180deg, #f8f5ef 0%, #f6f1ea 100%);
+}
+
+.saved-container {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.saved-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  font-size: 14px;
+  font-weight: 700;
+  color: #8b6ec7;
+  letter-spacing: 0.4px;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-size: 56px;
+  line-height: 1.02;
+  letter-spacing: -1.5px;
+  color: #243047;
+  margin: 0 0 12px;
+}
+
+.subtitle {
+  color: #5b6475;
+  font-size: 20px;
+  margin: 0;
+}
+
+.back-btn {
+  background: rgba(255, 255, 255, 0.82);
+  color: #6f54a8;
+  border: 1px solid rgba(139, 110, 199, 0.18);
+  border-radius: 18px;
+  padding: 14px 22px;
+  text-decoration: none;
+  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(72, 59, 102, 0.06);
+}
+
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 22px;
+}
+
+.event-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(166, 134, 210, 0.14);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 12px 28px rgba(72, 59, 102, 0.06);
+}
+
+.event-image {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+}
+
+.fallback-image {
+  background: linear-gradient(135deg, #d9c8f4, #f4d7c8);
+}
+
+.event-content {
+  padding: 20px;
+}
+
+.category-badge {
+  display: inline-block;
+  background: rgba(139, 110, 199, 0.12);
+  color: #6f54a8;
+  border: 1px solid rgba(139, 110, 199, 0.18);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.event-card h3 {
+  font-size: 28px;
+  color: #243047;
+  margin: 0 0 12px;
+}
+
+.event-meta {
+  font-size: 16px;
+  color: #4a5568;
+  margin: 0 0 8px;
+}
+
+.event-description {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #5b6475;
+  margin: 14px 0 18px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.view-btn,
+.remove-btn {
+  border: none;
+  border-radius: 16px;
+  padding: 11px 18px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.view-btn {
+  background: linear-gradient(135deg, #8b6ec7, #a686d2);
+  color: white;
+}
+
+.remove-btn {
+  background: rgba(255, 255, 255, 0.92);
+  color: #8b5b46;
+  border: 1px solid #e7cfc5;
+}
+
+.empty-shell {
+  display: flex;
+  justify-content: center;
+  margin-top: 34px;
+}
+
+.empty-card {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(166, 134, 210, 0.14);
+  border-radius: 28px;
+  padding: 32px;
+  text-align: center;
+  max-width: 520px;
+  box-shadow: 0 14px 34px rgba(72, 59, 102, 0.06);
+}
+
+.empty-card h2 {
+  margin: 0 0 12px;
+  color: #243047;
+  font-size: 32px;
+}
+
+.empty-card p {
+  margin: 0 0 20px;
+  color: #5b6475;
+  font-size: 17px;
+}
+
+@media (max-width: 768px) {
+  .saved-header {
+    flex-direction: column;
   }
-  
+
   h1 {
-    font-size: 48px;
+    font-size: 42px;
   }
-  
-  .subtitle {
-    color:#666;
-    margin-bottom:24px;
-  }
-  
-  .events-grid {
-    display:grid;
-    grid-template-columns: repeat(auto-fill,minmax(280px,1fr));
-    gap:20px;
-  }
-  
-  .event-card {
-    background:white;
-    padding:20px;
-    border-radius:18px;
-    box-shadow:0 10px 20px rgba(0,0,0,0.05);
-  }
-  
-  .event-image {
-    width:100%;
-    height:180px;
-    object-fit:cover;
-    border-radius:12px;
-    margin-bottom:12px;
-  }
-  
-  .view-btn {
-    display:inline-block;
-    margin-top:10px;
-    background:#8b6ec7;
-    color:white;
-    padding:8px 14px;
-    border-radius:10px;
-    text-decoration:none;
-  }
-  
-  .empty {
-    color:#666;
-  }
-  </style>
+}
+</style>
