@@ -17,9 +17,11 @@
         </template>
 
         <template v-if="user && user.role === 'organizer'">
-          <router-link to="/my-events" class="nav-link">My Events</router-link>
-          <router-link to="/create-event" class="nav-link">Create Event</router-link>
-        </template>
+  <router-link to="/my-events" class="nav-link">My Events</router-link>
+  <router-link to="/create-event" class="nav-link">Create Event</router-link>
+  <router-link to="/saved-events" class="nav-link">Saved Events</router-link>
+  <router-link to="/inbox" class="nav-link">Inbox</router-link>
+</template>
 
         <template v-if="user">
           <router-link

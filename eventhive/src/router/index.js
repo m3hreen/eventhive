@@ -60,12 +60,7 @@ const routes = [
     component: GuestListPage,
     meta: { requiresAuth: true, role: 'organizer' }
   },
-  {
-    path: '/inbox',
-    name: 'Inbox',
-    component: InboxPage,
-    meta: { requiresAuth: true, role: 'attendee' }
-  },
+  
   {
     path: '/suggestions',
     name: 'Suggestions',
@@ -79,11 +74,18 @@ const routes = [
     meta: { requiresAuth: true, role: 'attendee' }
   },
   {
+    path: '/inbox',
+    name: 'Inbox',
+    component: InboxPage,
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/saved-events',
     name: 'SavedEvents',
     component: () => import('../pages/SavedEventsPage.vue'),
-    meta: { requiresAuth: true, role: 'attendee' }
+    meta: { requiresAuth: true }
   }
+  
 ]
 
 const router = createRouter({
