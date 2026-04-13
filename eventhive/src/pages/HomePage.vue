@@ -25,9 +25,29 @@
   v-model="searchQuery"
   @input="applyFilters"
 />      <select id="categoryFilter">
+          <option value="">Any Category</option>
           <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
         </select>
-        <input id="dateFilter" type="date" />
+        <select id="yearFilter">
+          <option value="">Any Year</option>
+          <option v-for="year in years" :key="year" :value="year">
+            {{ year }}
+          </option>
+        </select>
+
+        <select id="monthFilter">
+          <option value="">Any Month</option>
+          <option v-for="month in months" :key="month.value" :value="month.value">
+            {{ month.label }}
+          </option>
+        </select>
+
+        <select id="dayFilter">
+          <option value="">Any Day</option>
+          <option v-for="day in days" :key="day" :value="day">
+            {{ day }}
+          </option>
+        </select>
         <input id="locationFilter" type="text" placeholder="City" />
         <button id="filterBtn" class="primary-btn" @click="applyFilters">Search</button>
         <button id="resetBtn" class="secondary-btn" type="button" @click="resetFilters">Reset</button>
@@ -177,6 +197,26 @@ const filterCategory = ref('')
 const filterDate = ref('')
 const filterLocation = ref('')
 
+const years = [2024, 2025, 2026, 2027, 2028]
+
+const months = [
+  { value: '01', label: 'January' },
+  { value: '02', label: 'February' },
+  { value: '03', label: 'March' },
+  { value: '04', label: 'April' },
+  { value: '05', label: 'May' },
+  { value: '06', label: 'June' },
+  { value: '07', label: 'July' },
+  { value: '08', label: 'August' },
+  { value: '09', label: 'September' },
+  { value: '10', label: 'October' },
+  { value: '11', label: 'November' },
+  { value: '12', label: 'December' }
+]
+
+const days = Array.from({ length: 31 }, (_, i) =>
+  String(i + 1).padStart(2, '0')
+)
 
 const createEventLink = computed(() => {
   if (currentUser.value?.role === 'organizer') return '/create-event'
@@ -210,33 +250,51 @@ const countByCategory = (cat) =>
  allEvents.value.filter(e => (e.category || '').toLowerCase() === cat.toLowerCase()).length
 
 const applyFilters = () => {
- const selCat = ($('#categoryFilter').val() || '').toString().trim().toLowerCase()
- const selDate = ($('#dateFilter').val() || '').toString().trim()
- const selLoc = ($('#locationFilter').val() || '').toString().trim().toLowerCase()
+  const selCat = ($('#categoryFilter').val() || '').toString().trim().toLowerCase()
+  const selYear = ($('#yearFilter').val() || '').toString().trim()
+  const selMonth = ($('#monthFilter').val() || '').toString().trim()
+  const selDay = ($('#dayFilter').val() || '').toString().trim()
+  const selLoc = ($('#locationFilter').val() || '').toString().trim().toLowerCase()
 
 
- filterCategory.value = ($('#categoryFilter').val() || '').toString().trim()
- filterDate.value = selDate
- filterLocation.value = ($('#locationFilter').val() || '').toString().trim()
+  filterCategory.value = ($('#categoryFilter').val() || '').toString().trim()
+  filterDate.value = [selYear, selMonth, selDay].filter(Boolean).join('-')
+  filterLocation.value = ($('#locationFilter').val() || '').toString().trim()
 
- selectedCategory.value = filterCategory.value
+  selectedCategory.value = filterCategory.value
 
- const search = searchQuery.value.toLowerCase()
+  const search = searchQuery.value.toLowerCase()
 
 events.value = allEvents.value.filter(event => {
   const evCat = (event.category || '').toLowerCase()
-  const evDate = (event.date || '').toString()
   const evLoc = (event.location || '').toLowerCase()
+
+let evYear = ''
+let evMonth = ''
+let evDay = ''
+
+if (event.date) {
+  const dateString = String(event.date).split('T')[0]
+  const parts = dateString.split('-')
+
+  if (parts.length === 3) {
+    evYear = parts[0]
+    evMonth = parts[1]
+    evDay = parts[2]
+  }
+}
 
   const matchSearch =
     !search ||
     event.title?.toLowerCase().includes(search)
 
   const matchCat = !selCat || evCat === selCat
-  const matchDate = !selDate || evDate === selDate
+  const matchYear = !selYear || evYear === selYear
+  const matchMonth = !selMonth || evMonth === selMonth
+  const matchDay = !selDay || evDay === selDay
   const matchLoc = !selLoc || evLoc.includes(selLoc)
 
-  return matchSearch && matchCat && matchDate && matchLoc
+  return matchSearch && matchCat && matchYear && matchMonth && matchDay && matchLoc
 })
 
  $('.event-card').fadeOut(150, function () {
@@ -249,17 +307,19 @@ events.value = allEvents.value.filter(event => {
 
 
 const resetFilters = () => {
- selectedCategory.value = ''
- filterCategory.value = ''
- filterDate.value = ''
- filterLocation.value = ''
- searchQuery.value = ''
+  selectedCategory.value = ''
+  filterCategory.value = ''
+  filterDate.value = ''
+  filterLocation.value = ''
+  searchQuery.value = ''
 
- $('#categoryFilter').val('')
- $('#dateFilter').val('')
- $('#locationFilter').val('')
+  $('#categoryFilter').val('')
+  $('#yearFilter').val('')
+  $('#monthFilter').val('')
+  $('#dayFilter').val('')
+  $('#locationFilter').val('')
 
- events.value = allEvents.value
+  events.value = allEvents.value
 }
 
 
