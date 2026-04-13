@@ -1,13 +1,11 @@
 <template>
   <nav class="navbar">
-    <div class="nav-left">
+    <div class="nav-container">
       <router-link to="/" class="logo-container">
         <img :src="logo" alt="EventHive Logo" class="logo" />
         <span class="logo-text">EventHive</span>
       </router-link>
-    </div>
 
-    <div class="nav-container">
       <div class="nav-links">
         <router-link to="/" class="nav-link">Home</router-link>
 
