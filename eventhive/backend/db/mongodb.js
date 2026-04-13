@@ -1,25 +1,25 @@
-const { MongoClient } = require('mongodb');
-const dotenv = require('dotenv');
+const { MongoClient } = require('mongodb')
+const dotenv = require('dotenv')
 
-dotenv.config();
+dotenv.config()
 
-const uri = process.env.MONGODB_URI;
+const uri = process.env.MONGODB_URI
 
 if (!uri) {
-  throw new Error('MONGODB_URI is missing from .env');
+  throw new Error('MONGODB_URI is missing from .env')
 }
 
-const client = new MongoClient(uri);
+const client = new MongoClient(uri)
 
-let db;
+let db
 
 async function connectDB() {
-  if (db) return db;
+  if (db) return db
 
-  await client.connect();
-  db = client.db('eventhive');
-  console.log('Connected to MongoDB');
-  return db;
+  await client.connect()
+  db = client.db('eventhive')
+  console.log('Connected to MongoDB')
+  return db
 }
 
-module.exports = connectDB;
+module.exports = connectDB

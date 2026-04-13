@@ -7,26 +7,28 @@
       </router-link>
 
       <div class="nav-links">
-        <router-link to="/" class="nav-link">Home</router-link>
+  <router-link to="/" class="nav-link">Home</router-link>
 
-        <template v-if="user && user.role === 'attendee'">
-          <router-link to="/attendee-dashboard" class="nav-link">Dashboard</router-link>
-        </template>
+  <template v-if="user && user.role === 'attendee'">
+    <router-link to="/suggestions" class="nav-link">Suggestions</router-link>
+    <router-link to="/inbox" class="nav-link">Inbox</router-link>
+  </template>
 
-        <template v-if="user && user.role === 'organizer'">
-          <router-link to="/organizer-dashboard" class="nav-link">Dashboard</router-link>
-        </template>
+  <template v-if="user && user.role === 'organizer'">
+    <router-link to="/my-events" class="nav-link">My Events</router-link>
+    <router-link to="/create-event" class="nav-link">Create Event</router-link>
+  </template>
 
-        <template v-if="user">
-          <span class="user-greeting">Hi, {{ user.name }}</span>
-          <button class="nav-outline-btn" @click="handleLogout">Logout</button>
-        </template>
+  <template v-if="user">
+    <span class="user-greeting">Hi, {{ user.name }}</span>
+    <button class="nav-outline-btn" @click="handleLogout">Logout</button>
+  </template>
 
-        <template v-else>
-          <router-link to="/login" class="nav-outline-btn nav-link-btn">Login</router-link>
-          <router-link to="/signup" class="nav-fill-btn nav-link-btn">Sign Up</router-link>
-        </template>
-      </div>
+  <template v-else>
+    <router-link to="/login" class="nav-outline-btn nav-link-btn">Login</router-link>
+    <router-link to="/signup" class="nav-fill-btn nav-link-btn">Sign Up</router-link>
+  </template>
+</div>
     </div>
   </nav>
 </template>
