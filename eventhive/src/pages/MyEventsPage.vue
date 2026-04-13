@@ -124,39 +124,22 @@ onMounted(() => {
 <style scoped>
 .my-events-page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #f8f5ef 0%, #f6f1ea 100%);
   padding: 48px 24px 72px;
   position: relative;
   overflow: hidden;
+  background: linear-gradient(180deg, #f8f5ef 0%, #f6f1ea 100%);
 }
 
 .my-events-page::before {
   content: '';
   position: absolute;
-  top: 80px;
-  left: -60px;
-  width: 280px;
-  height: 280px;
-  background: radial-gradient(circle, rgba(139, 110, 199, 0.18) 0%, rgba(247, 236, 141, 0.12) 42%, transparent 72%);
-  filter: blur(18px);
-  pointer-events: none;
-}
-
-.my-events-page::after {
-  content: '';
-  position: absolute;
-  bottom: 60px;
-  right: -40px;
-  width: 260px;
-  height: 260px;
-  background: radial-gradient(circle, rgba(246, 169, 58, 0.12) 0%, rgba(166, 134, 210, 0.1) 45%, transparent 75%);
-  filter: blur(18px);
+  inset: 0;
+  background: url('/hexagon-background.jpg') center/cover no-repeat;
+  opacity: 0.5;
   pointer-events: none;
 }
 
 .my-events-container {
-  max-width: 1160px;
-  margin: 0 auto;
   position: relative;
   z-index: 1;
 }
