@@ -180,7 +180,7 @@ async function handleLogin() {
   align-items: center;
   position: relative;
   z-index: 1;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.74) 0%, rgba(248, 243, 255, 0.78) 100%);
+  background: linear-gradient(180deg, rgba(255, 186, 58, 0.74) 0%, rgba(255, 247, 178, 0.78) 100%);
   border: 1px solid rgba(139, 110, 199, 0.12);
   border-radius: 34px;
   box-shadow: 0 18px 45px rgba(72, 59, 102, 0.08);
