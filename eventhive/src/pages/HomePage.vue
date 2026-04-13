@@ -215,12 +215,7 @@ const applyFilters = () => {
  filterDate.value = selDate
  filterLocation.value = ($('#locationFilter').val() || '').toString().trim()
 
-
- if (selectedCategory.value) {
-   $('#categoryFilter').val(selectedCategory.value)
-   filterCategory.value = selectedCategory.value
- }
-
+ selectedCategory.value = filterCategory.value
 
  events.value = allEvents.value.filter(event => {
    const evCat = (event.category || '').toLowerCase()
