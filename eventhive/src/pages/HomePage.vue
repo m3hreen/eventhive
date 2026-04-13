@@ -79,6 +79,45 @@
         </div>
       </div>
     </section>
+    <section class="featured-section">
+  <h2>Community Suggestions</h2>
+
+  <div class="featured-grid">
+    <div
+      class="event-card"
+      v-for="s in suggestions"
+      :key="s._id"
+    >
+      <div class="event-card-top">
+        <div>
+          <h3>{{ s.title }}</h3>
+          <span class="category-badge">{{ s.category }}</span>
+        </div>
+      </div>
+
+      <p class="event-location">
+        {{ s.location || 'Any location' }}
+      </p>
+
+      <p class="event-description">
+        {{ s.details }}
+      </p>
+
+      <div class="like-row">
+        <button
+          class="secondary-btn small-btn"
+          @click="likeSuggestion(s._id)"
+        >
+          👍 Like
+        </button>
+
+        <span class="like-count">
+          {{ s.likes || 0 }} likes
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
 
     <section class="how-it-works">
       <h2>How It Works</h2>
@@ -105,6 +144,7 @@ import { computed, onMounted, ref } from 'vue'
 
 const currentUser = ref(null)
 const events = ref([])
+const suggestions = ref([])
 
 const createEventLink = computed(() => {
   if (currentUser.value?.role === 'organizer') return '/create-event'
@@ -126,24 +166,50 @@ const categories = [
   'Conferences'
 ]
 
+async function loadSuggestions() {
+  try {
+    const res = await fetch('http://localhost:5001/api/suggestions')
+    const data = await res.json()
+    suggestions.value = data
+  } catch (e) {
+    console.error('suggestions error', e)
+  }
+}
+
+async function likeSuggestion(id) {
+  try {
+    const savedUser = localStorage.getItem('eventhiveUser')
+    const user = savedUser ? JSON.parse(savedUser) : null
+
+    if (!user?.email) return
+
+    await fetch(`http://localhost:5001/api/suggestions/${id}/like`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: user.email })
+    })
+
+    loadSuggestions()
+  } catch (e) {
+    console.error('like error', e)
+  }
+}
+
 onMounted(async () => {
   const savedUser = localStorage.getItem('eventhiveUser')
   currentUser.value = savedUser ? JSON.parse(savedUser) : null
 
   try {
     const res = await fetch('http://localhost:5001/api/events')
-if (!res.ok) throw new Error('Failed to load events')
-
-const data = await res.json()
-console.log('EVENTS FROM BACKEND:', data)
-events.value = data
+    const data = await res.json()
+    events.value = data
   } catch (error) {
-    console.error('Error loading events:', error)
     events.value = []
   }
+
+  loadSuggestions()
 })
 </script>
-
 <style scoped>
 .home-page {
   min-height: 100vh;
@@ -453,6 +519,17 @@ events.value = data
   color: #5b6475;
   margin: 0;
 }
+.like-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.like-count {
+  font-weight: 600;
+  color: #555;
+}
 
 @media (max-width: 960px) {
   .hero-section {
@@ -504,5 +581,16 @@ events.value = data
     flex-direction: column;
     gap: 12px;
   }
+  .like-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.like-count {
+  font-weight: 600;
+  color: #555;
+}
 }
 </style>

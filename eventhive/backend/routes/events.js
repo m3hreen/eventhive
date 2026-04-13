@@ -437,5 +437,48 @@ router.post('/suggestions/:id/like', async (req, res) => {
     res.status(500).json({ message: 'Server error while liking suggestion.' })
   }
 })
+router.get('/suggestions/stats', async (req, res) => {
+  try {
+    const db = await connectDB()
+    const suggestionsCollection = db.collection('suggestions')
+
+    const suggestions = await suggestionsCollection.find({}).toArray()
+
+    const totalSuggestions = suggestions.length
+    const totalLikes = suggestions.reduce((sum, s) => sum + (s.likes || 0), 0)
+
+    const mostLiked = suggestions.sort((a, b) => (b.likes || 0) - (a.likes || 0))[0] || null
+
+    const categoryCounts = {}
+    const locationCounts = {}
+
+    suggestions.forEach(s => {
+      if (s.category) {
+        categoryCounts[s.category] = (categoryCounts[s.category] || 0) + 1
+      }
+
+      if (s.location) {
+        locationCounts[s.location] = (locationCounts[s.location] || 0) + 1
+      }
+    })
+
+    const topCategory =
+      Object.entries(categoryCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || null
+
+    const topLocation =
+      Object.entries(locationCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || null
+
+    res.json({
+      totalSuggestions,
+      totalLikes,
+      mostLiked,
+      topCategory,
+      topLocation
+    })
+  } catch (error) {
+    console.error('Suggestions stats error:', error)
+    res.status(500).json({ message: 'Server error fetching suggestion stats' })
+  }
+})
 
 module.exports = router

@@ -68,6 +68,11 @@ const routes = [
     name: 'Suggestions',
     component: SuggestionsPage,
     meta: { requiresAuth: true, role: 'attendee' }
+  },
+  {
+    path: '/my-suggestions',
+    name: 'MySuggestions',
+    component: () => import('../pages/MySuggestionsPage.vue')
   }
 ]
 
