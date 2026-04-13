@@ -695,19 +695,6 @@ button:disabled {
     padding: 18px 20px;
   }
 
-  .nav-container {
-    flex-direction: column;
-    gap: 18px;
-    align-items: flex-start;
-  }
-
-  .nav-links {
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-left: 0;
-    justify-content: flex-start;
-  }
-
   .logo-text {
     font-size: 1.6rem;
   }
@@ -753,6 +740,11 @@ button:disabled {
   .auth-left h1 {
     font-size: 1.8rem;
   }
+
+  .nav-container {
+  flex-direction: row;
+  gap: 15px;
+}
 }
 
 .eyebrow-wrapper {

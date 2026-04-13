@@ -6,21 +6,33 @@
         <span class="logo-text">EventHive</span>
       </router-link>
 
-      <div class="nav-links">
-        <router-link v-if="user" to="/" class="nav-link">Home</router-link>
+      <button
+        class="burger-btn"
+        type="button"
+        @click="toggleMenu"
+        :aria-expanded="isMenuOpen ? 'true' : 'false'"
+        aria-label="Toggle navigation menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="nav-links" :class="{ open: isMenuOpen }">
+        <router-link v-if="user" to="/" class="nav-link" @click="closeMenu">Home</router-link>
 
         <template v-if="user && user.role === 'attendee'">
-          <router-link to="/suggestions" class="nav-link">Suggestions</router-link>
-          <router-link to="/my-suggestions" class="nav-link">My Suggestions</router-link>
-          <router-link to="/saved-events" class="nav-link">Saved Events</router-link>
-          <router-link to="/inbox" class="nav-link">Inbox</router-link>
+          <router-link to="/suggestions" class="nav-link" @click="closeMenu">Suggestions</router-link>
+          <router-link to="/my-suggestions" class="nav-link" @click="closeMenu">My Suggestions</router-link>
+          <router-link to="/saved-events" class="nav-link" @click="closeMenu">Saved Events</router-link>
+          <router-link to="/inbox" class="nav-link" @click="closeMenu">Inbox</router-link>
         </template>
 
         <template v-if="user && user.role === 'organizer'">
-  <router-link to="/my-events" class="nav-link">My Events</router-link>
-  <router-link to="/create-event" class="nav-link">Create Event</router-link>
-  <router-link to="/saved-events" class="nav-link">Saved Events</router-link>
-  <router-link to="/inbox" class="nav-link">Inbox</router-link>
+  <router-link to="/my-events" class="nav-link" @click="closeMenu">My Events</router-link>
+  <router-link to="/create-event" class="nav-link" @click="closeMenu">Create Event</router-link>
+  <router-link to="/saved-events" class="nav-link" @click="closeMenu">Saved Events</router-link>
+  <router-link to="/inbox" class="nav-link" @click="closeMenu">Inbox</router-link>
 </template>
 
         <template v-if="user">
@@ -57,6 +69,7 @@ import logo from '../assets/logo.svg'
 
 const router = useRouter()
 const currentUser = ref(null)
+const isMenuOpen = ref(false)
 
 function loadUser() {
   const savedUser = localStorage.getItem('eventhiveUser')
@@ -65,9 +78,24 @@ function loadUser() {
 
 const user = computed(() => currentUser.value)
 
+function toggleMenu() {
+  isMenuOpen.value = !isMenuOpen.value
+}
+
+function closeMenu() {
+  isMenuOpen.value = false
+}
+
+function handleResize() {
+  if (window.innerWidth > 900) {
+    closeMenu()
+  }
+}
+
 function handleLogout() {
   localStorage.removeItem('eventhiveUser')
   currentUser.value = null
+  closeMenu()
   window.dispatchEvent(new Event('user-auth-changed'))
   router.push('/login')
 }
@@ -80,11 +108,13 @@ onMounted(() => {
   loadUser()
   window.addEventListener('storage', handleStorageChange)
   window.addEventListener('user-auth-changed', handleStorageChange)
+  window.addEventListener('resize', handleResize)
 })
 
 onUnmounted(() => {
   window.removeEventListener('storage', handleStorageChange)
   window.removeEventListener('user-auth-changed', handleStorageChange)
+  window.removeEventListener('resize', handleResize)
 })
 </script>
 <style scoped>
@@ -96,5 +126,64 @@ onUnmounted(() => {
 
 .user-greeting.link:hover {
   opacity: 0.8;
+}
+
+.burger-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  margin-left: auto;
+}
+
+.burger-btn span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: #f5f4ed;
+  margin: 5px 0;
+  border-radius: 999px;
+}
+
+@media (max-width: 900px) {
+  .burger-btn {
+    display: block;
+  }
+
+  .nav-container {
+    position: relative;
+  }
+
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 320;
+    padding: 16px;
+    background: #8b6ec7;
+    border-radius: 10px;
+    box-shadow: 0 14px 34px rgba(72, 59, 102, 0.18);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    z-index: 1100;
+    margin-left: 0;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-link,
+  .user-greeting.link,
+  .nav-link-btn,
+  .nav-outline-btn,
+  .nav-fill-btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
 }
 </style>
