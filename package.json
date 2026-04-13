@@ -1,5 +1,14 @@
 {
   "dependencies": {
     "vue-router": "^5.0.4"
+  },
+  "scripts": {
+    "frontend": "cd eventhive && npm run dev",
+    "backend": "cd eventhive/backend && npm run dev",
+    "server": "cd eventhive/server && node server.js",
+    "dev:all": "concurrently \"npm run frontend\" \"npm run backend\" \"npm run server\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }
