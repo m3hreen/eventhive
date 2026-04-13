@@ -183,7 +183,6 @@ async function checkSaved() {
   <style scoped>
   .event-details-page {
     min-height: 100vh;
-    background: linear-gradient(180deg, #f8f5ef 0%, #f6f1ea 100%);
     padding: 48px 24px 72px;
   }
   

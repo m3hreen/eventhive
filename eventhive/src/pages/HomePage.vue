@@ -474,10 +474,10 @@ onMounted(async () => {
 <style scoped>
 .home-page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #f8f5ef 0%, #f6f1ea 100%);
   color: #243047;
   position: relative;
   overflow: hidden;
+  background: transparent;
 }
 
 .home-page::before {
@@ -487,7 +487,7 @@ onMounted(async () => {
   left: -50px;
   width: 320px;
   height: 320px;
-  background: radial-gradient(circle, rgba(139, 110, 199, 0.16) 0%, rgba(247, 236, 141, 0.1) 45%, transparent 75%);
+  background: transparent;
   filter: blur(22px);
   pointer-events: none;
 }
@@ -499,7 +499,7 @@ onMounted(async () => {
   right: -70px;
   width: 280px;
   height: 280px;
-  background: radial-gradient(circle, rgba(246, 169, 58, 0.1) 0%, rgba(166, 134, 210, 0.12) 42%, transparent 75%);
+  background: transparent;
   filter: blur(22px);
   pointer-events: none;
 }

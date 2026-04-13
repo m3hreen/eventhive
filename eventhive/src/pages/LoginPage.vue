@@ -127,47 +127,37 @@ async function handleLogin() {
 <style scoped>
 
 .auth-page {
-  min-height: 100vh; 
-  background: linear-gradient(180deg, #f8f5ef 0%, #f6f1ea 100%); 
+  min-height: 100vh;
   position: relative;
-  overflow: hidden; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  padding: 40px 20px; 
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+
+  background: transparent;
+    
 }
 
 .auth-page::before {
-  content: ''; 
-  position: absolute; 
-  top: 90px; 
-  left: -60px; 
-  width: 320px; 
-  height: 320px; 
-  background: radial-gradient(
-    circle,
-    rgba(139, 110, 199, 0.16) 0%,
-    rgba(247, 236, 141, 0.1) 45%,
-    transparent 75%
-  );
-  filter: blur(24px); 
-  pointer-events: none; 
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: transparent;
+
+  opacity: 0.50;
+  pointer-events: none;
 }
 
 .auth-page::after {
   content: '';
   position: absolute;
-  bottom: 40px;
-  right: -50px;
+  top: 520px;
+  right: -70px;
   width: 280px;
   height: 280px;
-  background: radial-gradient(
-    circle,
-    rgba(246, 169, 58, 0.1) 0%,
-    rgba(166, 134, 210, 0.12) 42%,
-    transparent 75%
-  );
-  filter: blur(24px);
+  background: transparent;
+  filter: blur(22px);
   pointer-events: none;
 }
 
@@ -180,11 +170,27 @@ async function handleLogin() {
   align-items: center;
   position: relative;
   z-index: 1;
-  background: linear-gradient(180deg, rgba(255, 186, 58, 0.74) 0%, rgba(255, 247, 178, 0.78) 100%);
+
+   background: linear-gradient(
+    130deg,
+    #a686d2 25%,
+    #f7ec8d 75%,
+    #f6a93a 100%
+  );
+
   border: 1px solid rgba(139, 110, 199, 0.12);
   border-radius: 34px;
   box-shadow: 0 18px 45px rgba(72, 59, 102, 0.08);
   padding: 42px;
+}
+
+.auth-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 34px;
+  background: rgba(255, 255, 255, 0.15);
+  pointer-events: none;
 }
 
 
@@ -238,17 +244,17 @@ async function handleLogin() {
 }
 
 .auth-left .welcome {
-  color: #6f54a8;
+  color: #4b3f72;
 }
 
 .auth-left .back {
-  color: #6f54a8;
+  color: #4b3f72;
 }
 
 .auth-left p {
   font-size: 21px;
   line-height: 1.75;
-  color: #7b718f;
+  color: #4b3f72;
   max-width: 400px;
   margin: 0;
 }
