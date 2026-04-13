@@ -244,10 +244,7 @@ events.value = allEvents.value.filter(event => {
  })
 
 
- $('html, body').animate(
-   { scrollTop: $('#featured').offset()?.top - 80 || 0 },
-   400
- )
+
 }
 
 
