@@ -9,7 +9,9 @@
         </p>
 
         <div class="hero-buttons">
-          <router-link :to="exploreLink" class="primary-btn">Explore Events</router-link>
+          <button class="primary-btn" @click="scrollToFeatured">
+            Explore Events
+          </button>
           <router-link :to="createEventLink" class="secondary-btn">Create an Event</router-link>
         </div>
       </div>
@@ -412,6 +414,13 @@ async function loadSuggestions() {
   } catch (e) {
     console.error('suggestions error', e)
     suggestions.value = []
+  }
+}
+
+function scrollToFeatured() {
+  const section = document.getElementById('featured')
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth' })
   }
 }
 
