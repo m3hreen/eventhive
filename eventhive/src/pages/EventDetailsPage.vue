@@ -933,6 +933,13 @@ onMounted(async () => {
   color: #243047;
 }
 
+.checkbox-row input {
+  width: 18px;
+  height: 18px;
+  margin: 0;    
+  accent-color: #8b6ec7;
+}
+
 .interest-grid {
   display: flex;
   flex-wrap: wrap;

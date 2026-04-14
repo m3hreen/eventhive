@@ -276,9 +276,10 @@ onMounted(async () => {
     inset: 0;
 
     background: url('/hexagon-background.jpg') center/cover no-repeat;
-
     opacity: 0.50;
+
     pointer-events: none;
+    z-index: 0;
   }
 
   .dashboard-page::after {
@@ -305,46 +306,55 @@ onMounted(async () => {
   .dashboard-container {
     max-width: 1180px;
     margin: 0 auto;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
   }
 
   .dashboard-hero {
-    display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: 28px;
-    align-items: center;
-    margin-bottom: 34px;
+    display: block;
+    margin-bottom: 28px;
   }
 
   .hero-text {
-    background: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(166, 134, 210, 0.14);
-    border-radius: 30px;
-    padding: 34px;
-    box-shadow: 0 16px 36px rgba(72, 59, 102, 0.06);
+    background: rgba(255, 251, 244, 0.96);
+    border-radius: 36px;
+    padding: 32px 34px;
+    box-shadow:
+      0 18px 36px rgba(72, 59, 102, 0.08),
+      0 4px 12px rgba(255, 255, 255, 0.35) inset;
   }
 
   .eyebrow {
-    font-size: 14px;
-    font-weight: 700;
-    color: #8b6ec7;
-    letter-spacing: 0.4px;
-    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
+    color: #8b6ec7;
+    margin-bottom: 10px;
   }
 
   .hero-text h1 {
-    font-size: 58px;
-    line-height: 1.02;
+    font-size: 56px;
+    line-height: 1.05;
     letter-spacing: -1.5px;
-    color: #243047;
-    margin: 0 0 14px;
+    font-weight: 800; 
+    color: #2d3748;
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
   }
 
   .dashboard-subtitle {
     font-size: 20px;
-    color: #5b6475;
-    margin: 0 0 22px;
     line-height: 1.6;
+    color: #5b6475;
+    max-width: 620px; 
+    margin-bottom: 24px;
   }
 
   .hero-actions {
@@ -374,21 +384,12 @@ onMounted(async () => {
     background: rgba(255, 255, 255, 0.9);
     color: #6f54a8;
     border: 1px solid rgba(139, 110, 199, 0.18);
+    backdrop-filter: blur(6px);
   }
 
   .primary-btn:hover,
   .secondary-btn:hover {
     transform: translateY(-2px);
-  }
-
-  .hero-image {
-    min-height: 320px;
-    border-radius: 30px;
-    background:
-      linear-gradient(rgba(139, 110, 199, 0.18), rgba(247, 236, 141, 0.08)),
-      url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80')
-      center/cover;
-    box-shadow: 0 18px 42px rgba(72, 59, 102, 0.08);
   }
 
   .dashboard-grid {
@@ -399,11 +400,33 @@ onMounted(async () => {
   }
 
   .dashboard-card {
-    background: rgba(255, 255, 255, 0.82);
-    border: 1px solid rgba(166, 134, 210, 0.14);
-    border-radius: 26px;
-    padding: 24px;
-    box-shadow: 0 14px 34px rgba(72, 59, 102, 0.06);
+    position: relative;
+    background: rgba(255, 251, 244, 0.88);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 20px 22px;
+    border: 1px solid rgba(166, 134, 210, 0.16);
+    box-shadow: 0 12px 26px rgba(72, 59, 102, 0.06);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .dashboard-card:hover,
+  .preview-card:hover,
+  .panel-card:hover,
+  .hero-text:hover {
+    transform: translateY(-3px);
+  }
+
+  .dashboard-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #8b6ec7, #f7ec8d, #f6a93a);
   }
 
   .card-label {
@@ -427,12 +450,12 @@ onMounted(async () => {
   }
 
   .dashboard-section {
-    background: rgba(255, 255, 255, 0.78);
-    border: 1px solid rgba(166, 134, 210, 0.14);
+    background: rgba(255, 251, 244, 0.9);
+    backdrop-filter: blur(10px);
     border-radius: 30px;
-    padding: 26px;
-    box-shadow: 0 14px 34px rgba(72, 59, 102, 0.06);
-    margin-bottom: 26px;
+    padding: 24px;
+    border: 1px solid rgba(166, 134, 210, 0.16);
+    box-shadow: 0 14px 34px rgba(72, 59, 102, 0.07);
   }
 
   .section-header {
@@ -457,16 +480,24 @@ onMounted(async () => {
 
   .preview-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 320px));
     gap: 18px;
+    justify-content: start;
   }
 
   .preview-card {
-    background: white;
-    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 26px;
     overflow: hidden;
-    border: 1px solid rgba(166, 134, 210, 0.12);
-    box-shadow: 0 10px 24px rgba(72, 59, 102, 0.05);
+    border: 1px solid rgba(166, 134, 210, 0.14);
+    box-shadow:
+      0 12px 28px rgba(72, 59, 102, 0.06),
+      0 3px 8px rgba(255, 255, 255, 0.25) inset;
+    transition: transform 0.2s ease;
+  }
+
+  .preview-card:hover {
+    transform: translateY(-3px);
   }
 
   .preview-image {
@@ -510,18 +541,15 @@ onMounted(async () => {
   .two-column {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 22px;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    padding: 0;
+    gap: 26px;
+    margin-top: 6px;
   }
 
   .panel-card {
     background: rgba(255, 255, 255, 0.78);
     border: 1px solid rgba(166, 134, 210, 0.14);
     border-radius: 30px;
-    padding: 26px;
+    padding: 28px;
     box-shadow: 0 14px 34px rgba(72, 59, 102, 0.06);
   }
 

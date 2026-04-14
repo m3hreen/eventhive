@@ -434,6 +434,7 @@ onMounted(() => {
 
 .date-pill {
   background: linear-gradient(135deg, #f7ec8d, #f8dfb3);
+  height: 34px; 
   color: #6c5a22;
   padding: 10px 16px;
   border-radius: 999px;
