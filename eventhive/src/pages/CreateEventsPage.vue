@@ -92,14 +92,18 @@ async function handleSubmit() {
     const savedUser = localStorage.getItem('eventhiveUser')
     const user = savedUser ? JSON.parse(savedUser) : null
 
-    const response = await fetch('http://localhost:5001/api/events', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ...form,
-        createdBy: user?.email || null
-      })
-    })
+    const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001'
+
+const response = await fetch(`${API_BASE}/api/events`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    ...form,
+    createdBy: user?.email || null,
+  }),
+})
 
     const data = await response.json()
 

@@ -700,5 +700,39 @@ router.post('/polls/:pollId/vote', async (req, res) => {
     res.status(500).json({ message: 'Server error voting.' })
   }
 })
+router.post('/events', async (req, res) => {
+  try {
+    const { title, date, location, category, description, image, createdBy } = req.body
+
+    if (!title || !date || !location || !category || !description) {
+      return res.status(400).json({ message: 'All fields are required.' })
+    }
+
+    const db = await connectDB()
+    const eventsCollection = db.collection('events')
+
+    const newEvent = {
+      title: title.trim(),
+      date,
+      location: location.trim(),
+      category: category.trim(),
+      description: description.trim(),
+      image: image ? image.trim() : '',
+      createdBy: createdBy || null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+
+    const result = await eventsCollection.insertOne(newEvent)
+
+    res.status(201).json({
+      message: 'Event created successfully.',
+      eventId: result.insertedId
+    })
+  } catch (error) {
+    console.error('Create event error:', error)
+    res.status(500).json({ message: 'Server error while creating event.' })
+  }
+})
 
 module.exports = router
