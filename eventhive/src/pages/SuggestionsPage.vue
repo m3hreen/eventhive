@@ -263,26 +263,29 @@ onMounted(() => {
 }
 
 .eyebrow {
-  font-size: 14px;
-  font-weight: 700;
-  color: #8b6ec7;
-  letter-spacing: 0.4px;
-  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
+  color: #8b6ec7;
+  margin: 0 0 10px;
 }
 
 .suggestions-header h1 {
-  font-size: 58px;
-  line-height: 1.02;
-  letter-spacing: -1.5px;
-  color: #243047;
-  margin: 0 0 12px;
+   font-size: 64px;
+   line-height: 0.95;
+   letter-spacing: -2px;
+   font-weight: 850;
+   color: #243047;
+   margin: 0 0 14px;
 }
 
 .suggestions-subtitle {
-  font-size: 20px;
+  font-size: 21px;
+  line-height: 1.6;
   color: #5b6475;
   margin: 0;
+  max-width: 620px;
 }
 
 .suggestions-shell {

@@ -413,26 +413,29 @@ onMounted(() => {
 }
 
 .eyebrow {
-  font-size: 14px;
-  font-weight: 700;
-  color: #8b6ec7;
-  letter-spacing: 0.4px;
-  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
+  color: #8b6ec7;
+  margin: 0 0 10px;
 }
 
 .inbox-header h1 {
-  font-size: 56px;
-  line-height: 1.02;
-  letter-spacing: -1.5px;
+  font-size: 64px;
+  line-height: 0.95;
+  letter-spacing: -2px;
+  font-weight: 850;
   color: #243047;
-  margin: 0 0 12px;
+  margin: 0 0 14px;
 }
 
 .inbox-subtitle {
-  font-size: 20px;
+  font-size: 21px;
+  line-height: 1.6;
   color: #5b6475;
   margin: 0;
+  max-width: 620px;
 }
 
 .back-btn {
@@ -459,11 +462,16 @@ onMounted(() => {
 
 .section-top h2 {
   margin: 0;
-  font-size: 30px;
+  font-size: 34px;
+  line-height: 1.05;
+  letter-spacing: -0.8px;
+  font-weight: 800;
   color: #243047;
 }
 
 .count-pill {
+  font-size: 15px;
+  font-weight: 800;
   background: #f3ecff;
   color: #7a5bc1;
   padding: 8px 12px;
@@ -495,20 +503,24 @@ onMounted(() => {
 }
 
 .inbox-card h3 {
-  font-size: 28px;
+  font-size: 26px;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  font-weight: 800;
   color: #243047;
   margin: 0 0 6px;
 }
 
 .inbox-date {
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 600;
   color: #8b5b46;
   margin: 0;
 }
 
 .inbox-message {
   font-size: 17px;
-  line-height: 1.6;
+  line-height: 1.7;
   color: #4a5568;
   margin-bottom: 12px;
 }
@@ -517,16 +529,19 @@ onMounted(() => {
   margin: 0 0 18px;
   color: #6a4f42;
   font-style: italic;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
 .read-pill {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
   display: inline-block;
   padding: 8px 12px;
   border-radius: 999px;
   background: rgba(34, 197, 94, 0.14);
   color: #166534;
-  font-size: 13px;
-  font-weight: 700;
   text-transform: capitalize;
 }
 
@@ -632,12 +647,15 @@ onMounted(() => {
 }
 
 .status-text {
-  font-size: 18px;
+  font-size: 17px;
+  line-height: 1.6;
   color: #5b6475;
 }
 
 .error-message {
-  font-size: 18px;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 600;
   color: #8d5b46;
   background: #fff3ef;
   border: 1px solid #f0d4ca;
