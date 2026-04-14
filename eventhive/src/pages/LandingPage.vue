@@ -9,7 +9,7 @@
         <h1>Bringing People Together</h1>
         <p>
           Discover local experiences, create beautiful event pages, manage guests,
-          and keep every RSVP, message, and detail in one place with EventHive.
+          and keep track of RSVPs, messages, and all event details in one place with EventHive.
         </p>
       </div>
 
@@ -61,8 +61,7 @@
         <article class="feature-card">
           <h3>Manage Your Community</h3>
           <p>
-            Track RSVPs, view guest lists, and stay connected with attendees from
-            one beautiful dashboard.
+            Track RSVPs, view guest lists, and stay connected with attendees with inbox messages and a personal dashboard.
           </p>
         </article>
       </div>
