@@ -65,19 +65,20 @@
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/yourusername/eventhive.git
-cd eventhive
+git clone https://github.com/m3hreen/webdev-final.git
 
 # 2. Install frontend dependencies
+cd eventhive
 npm install
 npm install jquery vue-router d3
+npm install d3
 
 # 3. Install backend dependencies
 cd backend
 npm install
 
 # 4. Install concurrently (run both servers at once)
-cd ..
+cd ../..
 npm install concurrently --save-dev
 ```
 
