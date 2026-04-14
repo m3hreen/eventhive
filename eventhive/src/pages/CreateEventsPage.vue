@@ -203,34 +203,34 @@ const response = await fetch(`${API_BASE}/api/events`, {
 
 
 .create-event-overlay {
- max-width: 380px;
+  max-width: 380px;
 }
 
 
 .create-event-overlay h1 {
- margin: 0 0 18px;
- font-size: 64px;
- line-height: 1;;
- letter-spacing: -1.5px;
- color: #243047;
- font-weight: 700;
+  margin: 0 0 18px;
+  font-size: 64px;
+  line-height: 1;;
+  letter-spacing: -1.5px;
+  color: #243047;
+  font-weight: 700;
 }
 
 
 .create-event-overlay p {
- margin: 0;
- font-size: 17px;
- line-height: 1.65;
- color: #5b6475;
- max-width: 340px;
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.65;
+  color: #5b6475;
+  max-width: 340px;
 }
 
 
 .create-event-right {
- display: flex;
- align-items: center;
- justify-content: center;
- padding: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 44px;
 }
 
 
@@ -245,43 +245,43 @@ const response = await fetch(`${API_BASE}/api/events`, {
 
 
 .create-event-form h2 {
- margin: 0 0 22px;
- font-size: 34px;
- line-height: 1;
- color: #6f54a8;
- font-weight: 800;
+  margin: 0 0 22px;
+  font-size: 34px;
+  line-height: 1;
+  color: #6f54a8;
+  font-weight: 800;
 }
 
 
 .create-event-form label {
- display: block;
- margin: 0 0 8px;
- font-size: 15px;
- font-weight: 700;
- color: #7a7694;
+  display: block;
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #7a7694;
 }
 
 
 .create-event-form input,
 .create-event-form select,
 .create-event-form textarea {
- width: 100%;
- box-sizing: border-box;
- margin-bottom: 16px;
- border: 1px solid #ded9ea;
- border-radius: 22px;
-  background: rgba(255, 255, 255, 0.82);
-  padding: 15px 18px;
- font-size: 15px;
- color: #243047;
- outline: none;
- transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+  border: 1px solid #ded9ea;
+  border-radius: 22px;
+    background: rgba(255, 255, 255, 0.82);
+    padding: 15px 18px;
+  font-size: 15px;
+  color: #243047;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 
 .create-event-form input::placeholder,
 .create-event-form textarea::placeholder {
- color: #9b97ac;
+  color: #9b97ac;
 }
 
 
@@ -297,56 +297,56 @@ const response = await fetch(`${API_BASE}/api/events`, {
 
 
 .create-event-form textarea {
- min-height: 120px;
- resize: vertical;
+  min-height: 120px;
+  resize: vertical;
 }
 
 
 .create-event-btn {
- width: 100%;
- border: none;
- border-radius: 999px;
- padding: 15px 20px;
- margin-top: 6px;
- background: linear-gradient(90deg, #8b6ec7 0%, #a686d2 52%, #d49a77 100%);
- color: white;
- font-size: 17px;
- font-weight: 800;
- cursor: pointer;
- box-shadow: 0 12px 24px rgba(139, 110, 199, 0.2);
- transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  width: 100%;
+  border: none;
+  border-radius: 999px;
+  padding: 15px 20px;
+  margin-top: 6px;
+  background: linear-gradient(90deg, #8b6ec7 0%, #a686d2 52%, #d49a77 100%);
+  color: white;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 12px 24px rgba(139, 110, 199, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
 
 .create-event-btn:hover {
- transform: translateY(-2px);
- box-shadow: 0 16px 28px rgba(139, 110, 199, 0.24);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 28px rgba(139, 110, 199, 0.24);
 }
 
 
 .create-event-btn:disabled {
- opacity: 0.7;
- cursor: not-allowed;
- transform: none;
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
 }
 
 
 .success-message,
 .error-message {
- margin-top: 14px;
- font-size: 14px;
- font-weight: 700;
- text-align: center;
+  margin-top: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
 }
 
 
 .success-message {
- color: #3c8a55;
+  color: #3c8a55;
 }
 
 
 .error-message {
- color: #c14b5a;
+  color: #c14b5a;
 }
 
 
@@ -412,7 +412,7 @@ const response = await fetch(`${API_BASE}/api/events`, {
 
 
  .create-event-form h2 {
-   font-size: 28px;
+    font-size: 28px;
  }
 }
 
