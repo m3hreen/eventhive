@@ -242,6 +242,62 @@ router.post('/events/:id/rsvp', async (req, res) => {
   }
 })
 
+router.get('/rsvps', async (req, res) => {
+  try {
+    const { email } = req.query
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required.' })
+    }
+
+    const normalizedEmail = email.trim().toLowerCase()
+
+    const db = await connectDB()
+    const rsvpsCollection = db.collection('rsvps')
+    const eventsCollection = db.collection('events')
+
+    // get user's RSVPs
+    const rsvps = await rsvpsCollection.find({
+      email: normalizedEmail
+    }).toArray()
+
+    if (!rsvps.length) {
+      return res.status(200).json([])
+    }
+
+    // get event IDs
+    const eventIds = rsvps
+      .map(r => r.eventId)
+      .filter(id => ObjectId.isValid(id))
+      .map(id => new ObjectId(id))
+
+    // fetch full event details
+    const events = await eventsCollection.find({
+      _id: { $in: eventIds }
+    }).toArray()
+
+    const eventMap = new Map(events.map(event => [String(event._id), event]))
+
+    const merged = rsvps
+      .map(rsvp => {
+        const event = eventMap.get(rsvp.eventId)
+        if (!event) return null
+
+        return {
+          ...event,
+          rsvpStatus: rsvp.status
+        }
+      })
+      .filter(Boolean)
+
+    res.status(200).json(merged)
+
+  } catch (error) {
+    console.error('Get user RSVPs error:', error)
+    res.status(500).json({ message: 'Server error fetching RSVPs.' })
+  }
+})
+
 router.get('/events/:id/rsvps', async (req, res) => {
   try {
     const { id } = req.params

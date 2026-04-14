@@ -21,19 +21,35 @@
       <div class="nav-links" :class="{ open: isMenuOpen }">
         <router-link v-if="user" to="/" class="nav-link" @click="closeMenu">Home</router-link>
 
-        <template v-if="user && user.role === 'attendee'">
-          <router-link to="/suggestions" class="nav-link" @click="closeMenu">Suggestions</router-link>
-          <router-link to="/my-suggestions" class="nav-link" @click="closeMenu">My Suggestions</router-link>
-          <router-link to="/saved-events" class="nav-link" @click="closeMenu">Saved Events</router-link>
-          <router-link to="/inbox" class="nav-link" @click="closeMenu">Inbox</router-link>
-        </template>
+      <template v-if="user">
+        <router-link to="/suggestions" class="nav-link" @click="closeMenu">Suggestions</router-link>
+
+        <!-- My dropdown -->
+        <div class="nav-dropdown">
+          <button class="nav-link dropdown-toggle" @click="toggleMyMenu">
+            My Activity ▾
+          </button>
+
+          <div class="dropdown-menu" v-show="isMyOpen">
+            <router-link to="/my-suggestions" class="dropdown-item" @click="closeAllMenus">
+              My Suggestions
+            </router-link>
+            <router-link to="/saved-events" class="dropdown-item" @click="closeAllMenus">
+              Saved Events
+            </router-link>
+            <router-link to="/rsvps" class="dropdown-item" @click="closeAllMenus">
+              My RSVPs
+            </router-link>
+          </div>
+        </div>
+
+        <router-link to="/inbox" class="nav-link" @click="closeMenu">Inbox</router-link>
+      </template>
 
         <template v-if="user && user.role === 'organizer'">
-  <router-link to="/my-events" class="nav-link" @click="closeMenu">My Events</router-link>
-  <router-link to="/create-event" class="nav-link" @click="closeMenu">Create Event</router-link>
-  <router-link to="/saved-events" class="nav-link" @click="closeMenu">Saved Events</router-link>
-  <router-link to="/inbox" class="nav-link" @click="closeMenu">Inbox</router-link>
-</template>
+          <router-link to="/my-events" class="nav-link" @click="closeMenu">My Events</router-link>
+          <router-link to="/create-event" class="nav-link" @click="closeMenu">Create Event</router-link>
+        </template>
 
         <template v-if="user">
           <router-link
@@ -70,6 +86,24 @@ import logo from '../assets/logo.svg'
 const router = useRouter()
 const currentUser = ref(null)
 const isMenuOpen = ref(false)
+
+const isMyOpen = ref(false)
+
+function closeAllMenus() {
+  isMyOpen.value = false
+  closeMenu()
+}
+
+function toggleMyMenu() {
+  isMyOpen.value = !isMyOpen.value
+}
+
+function handleClickOutside(event) {
+  const dropdown = document.querySelector('.nav-dropdown')
+  if (dropdown && !dropdown.contains(event.target)) {
+    isMyOpen.value = false
+  }
+}
 
 function loadUser() {
   const savedUser = localStorage.getItem('eventhiveUser')
@@ -109,12 +143,16 @@ onMounted(() => {
   window.addEventListener('storage', handleStorageChange)
   window.addEventListener('user-auth-changed', handleStorageChange)
   window.addEventListener('resize', handleResize)
+
+  document.addEventListener('click', handleClickOutside)
 })
 
 onUnmounted(() => {
   window.removeEventListener('storage', handleStorageChange)
   window.removeEventListener('user-auth-changed', handleStorageChange)
   window.removeEventListener('resize', handleResize)
+
+  document.removeEventListener('click', handleClickOutside)
 })
 </script>
 <style scoped>
@@ -166,6 +204,44 @@ onUnmounted(() => {
   background: #f5f4ed;
   margin: 5px 0;
   border-radius: 999px;
+}
+
+.nav-dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 180px;
+  background: #8b6ec7;
+  border-radius: 12px;
+  box-shadow: 0 14px 34px rgba(72, 59, 102, 0.18);
+  padding: 8px;
+  z-index: 1200;
+}
+
+
+.dropdown-item {
+  display: block;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.dropdown-item:hover {
+  background: rgba(0, 0, 0, 0.25);
+  color: #f7d774;
 }
 
 @media (max-width: 900px) {

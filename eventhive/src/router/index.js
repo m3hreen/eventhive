@@ -12,6 +12,7 @@ import GuestListPage from '../pages/GuestListPage.vue'
 import InboxPage from '../pages/InboxPage.vue'
 import SuggestionsPage from '../pages/SuggestionsPage.vue'
 import LandingPage from '../pages/LandingPage.vue'
+import RSVPs from '../pages/RSVPsPage.vue'
 
 const routes = [
   { path: '/', name: 'Landing', component: LandingPage },
@@ -65,13 +66,13 @@ const routes = [
     path: '/suggestions',
     name: 'Suggestions',
     component: SuggestionsPage,
-    meta: { requiresAuth: true, role: 'attendee' }
+    meta: { requiresAuth: true }
   },
   {
     path: '/my-suggestions',
     name: 'MySuggestions',
     component: () => import('../pages/MySuggestionsPage.vue'),
-    meta: { requiresAuth: true, role: 'attendee' }
+    meta: { requiresAuth: true }
   },
   {
     path: '/inbox',
@@ -83,6 +84,13 @@ const routes = [
     path: '/saved-events',
     name: 'SavedEvents',
     component: () => import('../pages/SavedEventsPage.vue'),
+    meta: { requiresAuth: true }
+  },
+
+  {
+    path: '/rsvps',
+    name: 'RSVPs',
+    component: () => import('../pages/RSVPsPage.vue'),
     meta: { requiresAuth: true }
   }
   
