@@ -11,34 +11,34 @@
 
 ## 📖 Table of Contents
 
-- [✨ Features](#-features)
-- [⚙️ Tech Stack](#️-tech-stack)
-- [📦 Installation](#-installation)
-- [🚀 Running the App](#-running-the-app)
-- [👥 User Roles](#-user-roles)
-- [🗄️ Database Schema](#️-database-schema)
-- [📁 Project Structure](#-project-structure)
-- [🔮 Future Roadmap](#-future-roadmap)
-- [👨‍💻 Contributors](#-contributors)
+- [Features](#-features)
+- [Tech Stack](#️-tech-stack)
+- [Installation](#-installation)
+- [Running the App](#-running-the-app)
+- [User Roles](#-user-roles)
+- [Database Schema](#️-database-schema)
+- [Project Structure](#-project-structure)
+- [Future Roadmap](#-future-roadmap)
+- [Contributors](#-contributors)
 
 ---
 
-## ✨ Features
+## Features
 
 | Category | Features |
 |----------|----------|
-| 📅 **Events** | Create, edit, delete, save, and browse events with images, dates, locations & categories |
-| 🔍 **Search** | Filter by title, category, date range, or location |
-| ✅ **RSVP** | Attending / Maybe / Declined with organizer tracking |
-| 🤝 **Matchmaking** | Connect with like-minded attendees, send/accept requests, chat |
-| 📊 **Analytics** | D3.js bar charts & pie charts for RSVPs and poll results |
-| 🗳️ **Polls** | Organizers create polls; attendees vote; results visualized live |
-| 💡 **Suggestions** | Community-driven event ideas with upvotes |
-| 📥 **Inbox** | Event reminders, matchmaking requests, chat messages, read/unread status |
+|**Events** | Create, edit, delete, save, and browse events with images, dates, locations & categories |
+|**Search** | Filter by title, category, date range, or location |
+|**RSVP** | Attending / Maybe / Declined with organizer tracking |
+|**Matchmaking** | Connect with like-minded attendees, send/accept requests, chat |
+|**Analytics** | D3.js bar charts & pie charts for RSVPs and poll results |
+|**Polls** | Organizers create polls; attendees vote; results visualized live |
+|**Suggestions** | Community-driven event ideas with upvotes |
+|**Inbox** | Event reminders, matchmaking requests, chat messages, read/unread status |
 
 ---
 
-## ⚙️ Tech Stack
+## Tech Stack
 
 <div align="center">
 
@@ -53,7 +53,7 @@
 
 ---
 
-## 📦 Installation
+## Installation
 
 ### Prerequisites
 
@@ -81,11 +81,11 @@ cd ..
 npm install concurrently --save-dev
 ```
 
-> 💡 **Note:** Create a `.env` file in the `backend/` folder with your MongoDB Atlas connection string.
+> **Note:** Create a `.env` file in the `backend/` folder with your MongoDB Atlas connection string.
 
 ---
 
-## 🚀 Running the App
+## Running the App
 
 ```bash
 npm run dev:all
@@ -93,20 +93,20 @@ npm run dev:all
 
 | Server | URL |
 |--------|-----|
-| 🌐 Frontend (Vite) | `http://localhost:5173` |
-| ⚙️ Backend (Express) | `http://localhost:5001` |
+|Frontend (Vite) | `http://localhost:5173` |
+|Backend (Express) | `http://localhost:5001` |
 
-> ⚠️ **The backend MUST be running** for: login/signup, RSVP, polls, inbox/chat, matchmaking, and reminders.
+> **The backend MUST be running** for: login/signup, RSVP, polls, inbox/chat, matchmaking, and reminders.
 
 ---
 
-## 👥 User Roles
+## User Roles
 
 <table>
 <tr>
-<th>👤 Everyone</th>
-<th>🎟️ Attendees</th>
-<th>📊 Organizers</th>
+<th>Everyone</th>
+<th>Attendees</th>
+<th>Organizers</th>
 </tr>
 <tr>
 <td>
@@ -146,20 +146,20 @@ npm run dev:all
 
 ---
 
-## 🗄️ Database Schema
+## Database Schema
 
 **MongoDB Collections:**
 
 ```
-📦 Users
-📦 Events
-📦 RSVPs
-📦 Polls
-📦 Suggestions
-📦 SavedEvents
-📦 MatchmakingRequests
-📦 Messages
-📦 Reminders
+Users
+Events
+RSVPs
+Polls
+Suggestions
+SavedEvents
+MatchmakingRequests
+Messages
+Reminders
 ```
 
 ---
@@ -185,7 +185,7 @@ eventhive/
 
 ---
 
-## 🔮 Future Roadmap
+## Future Roadmap
 
 - [ ] Real-time messaging with **Socket.io**
 - [ ] Image uploads (instead of URLs) via Cloudinary
@@ -196,13 +196,13 @@ eventhive/
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 
 
 ---
 
-## 👨‍💻 Contributors
+## Contributors
 
 - Malasa Khan
 - Mehreen Morshed
