@@ -10,7 +10,7 @@
           </p>
         </div>
 
-        <router-link to="/attendee-dashboard" class="back-btn">
+        <router-link :to="dashboardLink" class="back-btn">
           Back to Dashboard
         </router-link>
       </div>
@@ -79,9 +79,16 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 const events = ref([])
+
+const currentUser = ref(null)
+
+const dashboardLink = computed(() => {
+  if (currentUser.value?.role === 'organizer') return '/organizer-dashboard'
+  return '/attendee-dashboard'
+})
 
 function getCurrentUser() {
   const savedUser = localStorage.getItem('eventhiveUser')
@@ -153,6 +160,7 @@ async function removeSavedEvent(eventId) {
 }
 
 onMounted(() => {
+  currentUser.value = getCurrentUser()
   loadSaved()
 })
 </script>

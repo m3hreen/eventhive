@@ -8,7 +8,7 @@
             <p class="inbox-subtitle">Your event reminders and notifications.</p>
           </div>
   
-          <router-link to="/attendee-dashboard" class="back-btn">Back to Dashboard</router-link>
+          <router-link :to="dashboardLink" class="back-btn">Back to Dashboard</router-link>
         </div>
   
         <div v-if="loading" class="status-text">Loading reminders...</div>
@@ -47,11 +47,18 @@
   </template>
   
   <script setup>
-  import { onMounted, ref } from 'vue'
+  import { computed, onMounted, ref } from 'vue'
   
   const reminders = ref([])
   const loading = ref(true)
   const errorMessage = ref('')
+
+  const currentUser = ref(null)
+
+  const dashboardLink = computed(() => {
+    if (currentUser.value?.role === 'organizer') return '/organizer-dashboard'
+    return '/attendee-dashboard'
+  })
   
   function formatDate(value) {
     if (!value) return 'N/A'
@@ -117,8 +124,10 @@
   }
   
   onMounted(() => {
+    currentUser.value = JSON.parse(localStorage.getItem('eventhiveUser') || 'null')
     fetchReminders()
   })
+  
   </script>
   
   <style scoped>
