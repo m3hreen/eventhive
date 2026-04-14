@@ -5,7 +5,7 @@
       <section class="dashboard-hero">
         <div class="hero-text">
           <p class="eyebrow">Organizer Dashboard</p>
-          <h1>Understand what attendees want</h1>
+          <h1>Understand What Attendees Want</h1>
           <p class="dashboard-subtitle">
             Review suggestions, track likes, and identify the best events to create next.
           </p>
