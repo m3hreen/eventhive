@@ -88,7 +88,7 @@ cd ../..
 npm install concurrently --save-dev
 ```
 
-> **Note:** Create a `.env` file in the `backend/` folder with your MongoDB Atlas connection string.
+> **Note:** You may have to create a `.env` file in the `backend/` folder with your MongoDB Atlas connection string. Our MongoDB access is public, so you are not expected to do this if there aren't any errors.
 
 ---
 
