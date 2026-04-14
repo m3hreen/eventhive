@@ -87,7 +87,7 @@ Edit and delete events
 View detailed event pages  
 Save events
 
-### 🔍 Search and Filtering
+### Search and Filtering
 
 Search events by title  
 Filter by:
@@ -174,6 +174,7 @@ Stored in MongoDB:
 - Access MySuggestions page
 - View dashboard activity
 - Use matchmaking and messaging
+- Like Suggestion Posts
 
 **Organizers**
 
@@ -183,6 +184,7 @@ Stored in MongoDB:
 - Access guest lists
 - View analytics
 - Send reminders
+- Like Suggestion Posts
 
 ## UI and UX
 
@@ -244,19 +246,6 @@ eventhive/
 - Backend must be running for full functionality
 - If the app does not run locally, refer to the demo video
 
-## Demo Requirements
-
-The demo video should show:
-
-- login/signup
-- event creation
-- RSVP
-- poll voting
-- suggestions
-- guest analytics (D3 charts)
-- matchmaking
-- inbox messaging
-- notifications
 
 ## Future Improvements
 
