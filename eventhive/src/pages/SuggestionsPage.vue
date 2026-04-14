@@ -14,7 +14,7 @@
       <div class="suggestions-shell">
         <div class="suggestions-left">
           <div class="suggestions-overlay">
-            <h2>Help shape future events</h2>
+            <h2>Help Shape Future Events</h2>
             <p>
               Suggest a category, theme, location, or full event concept.
               Your ideas can inspire the next featured experience.
@@ -318,18 +318,26 @@ onMounted(() => {
 
 .suggestions-left {
   min-height: 540px;
+  position: relative;
   background:
-    linear-gradient(rgba(139, 110, 199, 0.3), rgba(247, 236, 141, 0.12)),
     url('https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1200&q=80')
     center/cover;
-  display: flex;
-  align-items: flex-end;
 }
 
 .suggestions-overlay {
-  color: white;
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* keeps text near bottom */
+  
   padding: 40px;
-  max-width: 420px;
+
+  background: rgba(0, 0, 0, 0.45); /* full glass layer */
+  backdrop-filter: blur(6px);
+
+  color: white;
 }
 
 .suggestions-overlay h2 {
