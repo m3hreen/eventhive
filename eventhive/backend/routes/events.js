@@ -4,6 +4,58 @@ const connectDB = require('../db/mongodb')
 
 const router = express.Router()
 
+function normalizeEmail(email = '') {
+  return email.trim().toLowerCase()
+}
+
+function normalizeMatchmaking(matchmaking = {}) {
+  const interests = Array.isArray(matchmaking.interests)
+    ? matchmaking.interests.map(item => String(item).trim()).filter(Boolean)
+    : []
+
+  return {
+    enabled: Boolean(matchmaking.enabled),
+    interests,
+    location: matchmaking.location ? String(matchmaking.location).trim() : '',
+    attendingType: matchmaking.attendingType ? String(matchmaking.attendingType).trim() : '',
+    bio: matchmaking.bio ? String(matchmaking.bio).trim() : ''
+  }
+}
+
+function buildMatchScore(currentProfile, otherProfile) {
+  let score = 0
+
+  const currentInterests = currentProfile?.interests || []
+  const otherInterests = otherProfile?.interests || []
+
+  const sharedInterests = currentInterests.filter(interest =>
+    otherInterests.includes(interest)
+  )
+
+  score += sharedInterests.length * 3
+
+  if (
+    currentProfile?.location &&
+    otherProfile?.location &&
+    currentProfile.location.toLowerCase() === otherProfile.location.toLowerCase()
+  ) {
+    score += 2
+  }
+
+  if (
+    currentProfile?.attendingType &&
+    otherProfile?.attendingType &&
+    currentProfile.attendingType.toLowerCase() === otherProfile.attendingType.toLowerCase()
+  ) {
+    score += 1
+  }
+
+  return {
+    score,
+    sharedInterests
+  }
+}
+
 router.post('/suggestions/:id/like', async (req, res) => {
   try {
     const { id } = req.params
@@ -17,7 +69,7 @@ router.post('/suggestions/:id/like', async (req, res) => {
       return res.status(400).json({ message: 'User email is required.' })
     }
 
-    const normalizedEmail = email.trim().toLowerCase()
+    const normalizedEmail = normalizeEmail(email)
 
     const db = await connectDB()
     const suggestionsCollection = db.collection('suggestions')
@@ -70,6 +122,49 @@ router.post('/suggestions/:id/like', async (req, res) => {
   }
 })
 
+router.post('/events', async (req, res) => {
+  try {
+    const {
+      title,
+      date,
+      location,
+      category,
+      description,
+      image,
+      createdBy
+    } = req.body
+
+    if (!title || !date || !location || !category || !description) {
+      return res.status(400).json({ message: 'All fields are required.' })
+    }
+
+    const db = await connectDB()
+    const eventsCollection = db.collection('events')
+
+    const newEvent = {
+      title: title.trim(),
+      date,
+      location: location.trim(),
+      category: category.trim(),
+      description: description.trim(),
+      image: image ? image.trim() : '',
+      createdBy: createdBy ? normalizeEmail(createdBy) : '',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+
+    const result = await eventsCollection.insertOne(newEvent)
+
+    res.status(201).json({
+      message: 'Event created successfully.',
+      eventId: result.insertedId
+    })
+  } catch (error) {
+    console.error('Create event error:', error)
+    res.status(500).json({ message: 'Server error while creating event.' })
+  }
+})
+
 router.get('/events', async (req, res) => {
   try {
     const { createdBy } = req.query
@@ -77,7 +172,7 @@ router.get('/events', async (req, res) => {
     const db = await connectDB()
     const eventsCollection = db.collection('events')
 
-    const filter = createdBy ? { createdBy } : {}
+    const filter = createdBy ? { createdBy: normalizeEmail(createdBy) } : {}
     const events = await eventsCollection.find(filter).sort({ createdAt: -1 }).toArray()
 
     res.status(200).json(events)
@@ -179,7 +274,7 @@ router.delete('/events/:id', async (req, res) => {
 router.post('/events/:id/rsvp', async (req, res) => {
   try {
     const { id } = req.params
-    const { name, email, status } = req.body
+    const { name, email, status, matchmaking } = req.body
 
     if (!ObjectId.isValid(id)) {
       return res.status(400).json({ message: 'Invalid event ID.' })
@@ -203,7 +298,12 @@ router.post('/events/:id/rsvp', async (req, res) => {
       return res.status(404).json({ message: 'Event not found.' })
     }
 
-    const normalizedEmail = email.trim().toLowerCase()
+    const normalizedEmail = normalizeEmail(email)
+    const normalizedMatchmaking = normalizeMatchmaking(matchmaking)
+
+    if (status === 'Declined') {
+      normalizedMatchmaking.enabled = false
+    }
 
     const existingRsvp = await rsvpsCollection.findOne({
       eventId: id,
@@ -217,6 +317,7 @@ router.post('/events/:id/rsvp', async (req, res) => {
           $set: {
             name: name.trim(),
             status,
+            matchmaking: normalizedMatchmaking,
             updatedAt: new Date()
           }
         }
@@ -231,6 +332,7 @@ router.post('/events/:id/rsvp', async (req, res) => {
       name: name.trim(),
       email: normalizedEmail,
       status,
+      matchmaking: normalizedMatchmaking,
       createdAt: new Date(),
       updatedAt: new Date()
     })
@@ -321,6 +423,271 @@ router.get('/events/:id/rsvps', async (req, res) => {
   }
 })
 
+router.get('/events/:id/matchmaking', async (req, res) => {
+  try {
+    const { id } = req.params
+    const { email } = req.query
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid event ID.' })
+    }
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required.' })
+    }
+
+    const normalizedEmail = normalizeEmail(email)
+
+    const db = await connectDB()
+    const rsvpsCollection = db.collection('rsvps')
+    const requestsCollection = db.collection('matchmaking_requests')
+
+    const currentUserRsvp = await rsvpsCollection.findOne({
+      eventId: id,
+      email: normalizedEmail
+    })
+
+    if (!currentUserRsvp) {
+      return res.status(404).json({ message: 'Please RSVP first before using matchmaking.' })
+    }
+
+    if (!['Attending', 'Maybe'].includes(currentUserRsvp.status)) {
+      return res.status(400).json({ message: 'Only Attending or Maybe guests can use matchmaking.' })
+    }
+
+    const currentProfile = currentUserRsvp.matchmaking || {}
+    if (!currentProfile.enabled) {
+      return res.status(200).json([])
+    }
+
+    const potentialMatches = await rsvpsCollection
+      .find({
+        eventId: id,
+        email: { $ne: normalizedEmail },
+        status: { $in: ['Attending', 'Maybe'] },
+        'matchmaking.enabled': true
+      })
+      .toArray()
+
+    const existingRequests = await requestsCollection.find({
+      eventId: id,
+      $or: [
+        { fromEmail: normalizedEmail },
+        { toEmail: normalizedEmail }
+      ]
+    }).toArray()
+
+    const requestMap = new Map()
+    existingRequests.forEach(request => {
+      const otherEmail =
+        request.fromEmail === normalizedEmail ? request.toEmail : request.fromEmail
+      requestMap.set(otherEmail, request.status || 'pending')
+    })
+
+    const matches = potentialMatches
+      .map(match => {
+        const scoreData = buildMatchScore(currentProfile, match.matchmaking || {})
+        return {
+          _id: match._id,
+          name: match.name,
+          email: match.email,
+          status: match.status,
+          matchmaking: match.matchmaking || {},
+          sharedInterests: scoreData.sharedInterests,
+          matchScore: scoreData.score,
+          connectionStatus: requestMap.get(match.email) || 'none'
+        }
+      })
+      .filter(match => match.matchScore > 0)
+      .sort((a, b) => b.matchScore - a.matchScore || a.name.localeCompare(b.name))
+
+    res.status(200).json(matches)
+  } catch (error) {
+    console.error('Get matchmaking matches error:', error)
+    res.status(500).json({ message: 'Server error while fetching matches.' })
+  }
+})
+
+router.post('/events/:id/matchmaking/connect', async (req, res) => {
+  try {
+    const { id } = req.params
+    const { fromEmail, toEmail, message } = req.body
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid event ID.' })
+    }
+
+    if (!fromEmail || !toEmail) {
+      return res.status(400).json({ message: 'Both users are required.' })
+    }
+
+    const senderEmail = normalizeEmail(fromEmail)
+    const receiverEmail = normalizeEmail(toEmail)
+
+    if (senderEmail === receiverEmail) {
+      return res.status(400).json({ message: 'You cannot connect with yourself.' })
+    }
+
+    const db = await connectDB()
+    const rsvpsCollection = db.collection('rsvps')
+    const requestsCollection = db.collection('matchmaking_requests')
+
+    const senderRsvp = await rsvpsCollection.findOne({ eventId: id, email: senderEmail })
+    const receiverRsvp = await rsvpsCollection.findOne({ eventId: id, email: receiverEmail })
+
+    if (!senderRsvp || !receiverRsvp) {
+      return res.status(404).json({ message: 'Both attendees must RSVP first.' })
+    }
+
+    if (!senderRsvp.matchmaking?.enabled || !receiverRsvp.matchmaking?.enabled) {
+      return res.status(400).json({ message: 'Both attendees must enable matchmaking.' })
+    }
+
+    const existingRequest = await requestsCollection.findOne({
+      eventId: id,
+      $or: [
+        { fromEmail: senderEmail, toEmail: receiverEmail },
+        { fromEmail: receiverEmail, toEmail: senderEmail }
+      ]
+    })
+
+    if (existingRequest) {
+      return res.status(400).json({ message: 'A connection request already exists for these users.' })
+    }
+
+    await requestsCollection.insertOne({
+      eventId: id,
+      eventTitle: senderRsvp.eventTitle,
+      fromEmail: senderEmail,
+      fromName: senderRsvp.name,
+      toEmail: receiverEmail,
+      toName: receiverRsvp.name,
+      introMessage: message ? String(message).trim() : '',
+      status: 'pending',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      read: false
+    })
+
+    res.status(201).json({ message: 'Connection request sent successfully.' })
+  } catch (error) {
+    console.error('Create matchmaking request error:', error)
+    res.status(500).json({ message: 'Server error while sending connection request.' })
+  }
+})
+
+router.get('/matchmaking-requests', async (req, res) => {
+  try {
+    const { email } = req.query
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required.' })
+    }
+
+    const normalizedEmail = normalizeEmail(email)
+
+    const db = await connectDB()
+    const requestsCollection = db.collection('matchmaking_requests')
+
+    const requests = await requestsCollection
+      .find({
+        $or: [
+          { fromEmail: normalizedEmail },
+          { toEmail: normalizedEmail }
+        ]
+      })
+      .sort({ updatedAt: -1, createdAt: -1 })
+      .toArray()
+
+    res.status(200).json(requests)
+  } catch (error) {
+    console.error('Get matchmaking requests error:', error)
+    res.status(500).json({ message: 'Server error while fetching connection requests.' })
+  }
+})
+
+router.patch('/matchmaking-requests/:id/respond', async (req, res) => {
+  try {
+    const { id } = req.params
+    const { email, action } = req.body
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid request ID.' })
+    }
+
+    if (!email || !action) {
+      return res.status(400).json({ message: 'Email and action are required.' })
+    }
+
+    if (!['accepted', 'declined'].includes(action)) {
+      return res.status(400).json({ message: 'Invalid action.' })
+    }
+
+    const normalizedEmail = normalizeEmail(email)
+
+    const db = await connectDB()
+    const requestsCollection = db.collection('matchmaking_requests')
+
+    const requestDoc = await requestsCollection.findOne({ _id: new ObjectId(id) })
+
+    if (!requestDoc) {
+      return res.status(404).json({ message: 'Connection request not found.' })
+    }
+
+    if (requestDoc.toEmail !== normalizedEmail) {
+      return res.status(403).json({ message: 'Only the recipient can respond to this request.' })
+    }
+
+    await requestsCollection.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          status: action,
+          read: true,
+          updatedAt: new Date()
+        }
+      }
+    )
+
+    res.status(200).json({ message: `Connection request ${action}.` })
+  } catch (error) {
+    console.error('Respond matchmaking request error:', error)
+    res.status(500).json({ message: 'Server error while responding to connection request.' })
+  }
+})
+
+router.patch('/matchmaking-requests/:id/read', async (req, res) => {
+  try {
+    const { id } = req.params
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid request ID.' })
+    }
+
+    const db = await connectDB()
+    const requestsCollection = db.collection('matchmaking_requests')
+
+    const result = await requestsCollection.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          read: true,
+          updatedAt: new Date()
+        }
+      }
+    )
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: 'Connection request not found.' })
+    }
+
+    res.status(200).json({ message: 'Connection request marked as read.' })
+  } catch (error) {
+    console.error('Mark matchmaking request read error:', error)
+    res.status(500).json({ message: 'Server error while marking request as read.' })
+  }
+})
+
 router.post('/events/:id/send-reminder', async (req, res) => {
   try {
     const { id } = req.params
@@ -382,7 +749,7 @@ router.get('/reminders', async (req, res) => {
     const remindersCollection = db.collection('reminders')
 
     const reminders = await remindersCollection
-      .find({ attendeeEmail: email.trim().toLowerCase() })
+      .find({ attendeeEmail: normalizeEmail(email) })
       .sort({ sentAt: -1 })
       .toArray()
 
@@ -527,7 +894,6 @@ router.get('/suggestions', async (req, res) => {
   }
 })
 
-
 router.post('/events/:id/save', async (req, res) => {
   try {
     const { id } = req.params
@@ -541,7 +907,7 @@ router.post('/events/:id/save', async (req, res) => {
       return res.status(400).json({ message: 'Email is required.' })
     }
 
-    const normalizedEmail = email.trim().toLowerCase()
+    const normalizedEmail = normalizeEmail(email)
 
     const db = await connectDB()
     const savedCollection = db.collection('saved_events')
@@ -587,7 +953,7 @@ router.delete('/events/:id/save', async (req, res) => {
       return res.status(400).json({ message: 'Email is required.' })
     }
 
-    const normalizedEmail = email.trim().toLowerCase()
+    const normalizedEmail = normalizeEmail(email)
 
     const db = await connectDB()
     const savedCollection = db.collection('saved_events')
@@ -616,7 +982,7 @@ router.get('/saved-events', async (req, res) => {
       return res.status(400).json({ message: 'Email is required.' })
     }
 
-    const normalizedEmail = email.trim().toLowerCase()
+    const normalizedEmail = normalizeEmail(email)
 
     const db = await connectDB()
     const savedCollection = db.collection('saved_events')
@@ -633,8 +999,8 @@ router.get('/saved-events', async (req, res) => {
 
     const validIds = savedDocs
       .map(doc => doc.eventId)
-      .filter(id => ObjectId.isValid(id))
-      .map(id => new ObjectId(id))
+      .filter(savedId => ObjectId.isValid(savedId))
+      .map(savedId => new ObjectId(savedId))
 
     if (!validIds.length) {
       return res.status(200).json([])
@@ -644,7 +1010,7 @@ router.get('/saved-events', async (req, res) => {
       .find({ _id: { $in: validIds } })
       .toArray()
 
-    const eventMap = new Map(events.map(event => [String(event._id), event]))
+    const eventMap = new Map(events.map(savedEvent => [String(savedEvent._id), savedEvent]))
 
     const orderedEvents = savedDocs
       .map(doc => eventMap.get(doc.eventId))
@@ -656,6 +1022,7 @@ router.get('/saved-events', async (req, res) => {
     res.status(500).json({ message: 'Server error while fetching saved events.' })
   }
 })
+
 router.post('/events/:id/polls', async (req, res) => {
   try {
     const { id } = req.params
@@ -675,8 +1042,8 @@ router.post('/events/:id/polls', async (req, res) => {
     const poll = {
       eventId: id,
       question: question.trim(),
-      options: options.map(o => ({
-        text: o.trim(),
+      options: options.map(option => ({
+        text: option.trim(),
         votes: 0
       })),
       votedBy: [],
@@ -692,7 +1059,6 @@ router.post('/events/:id/polls', async (req, res) => {
     res.status(500).json({ message: 'Server error creating poll.' })
   }
 })
-
 
 router.get('/events/:id/polls', async (req, res) => {
   try {
@@ -713,7 +1079,6 @@ router.get('/events/:id/polls', async (req, res) => {
   }
 })
 
-
 router.post('/polls/:pollId/vote', async (req, res) => {
   try {
     const { pollId } = req.params
@@ -722,6 +1087,12 @@ router.post('/polls/:pollId/vote', async (req, res) => {
     if (!ObjectId.isValid(pollId)) {
       return res.status(400).json({ message: 'Invalid poll ID.' })
     }
+
+    if (optionIndex === undefined || !email) {
+      return res.status(400).json({ message: 'Option index and email are required.' })
+    }
+
+    const normalizedEmail = normalizeEmail(email)
 
     const db = await connectDB()
     const pollsCollection = db.collection('polls')
@@ -734,10 +1105,16 @@ router.post('/polls/:pollId/vote', async (req, res) => {
       return res.status(404).json({ message: 'Poll not found.' })
     }
 
-    const normalizedEmail = email.trim().toLowerCase()
-
     if (poll.votedBy?.includes(normalizedEmail)) {
-      return res.status(400).json({ message: 'Already voted.' })
+      return res.status(400).json({ message: 'You have already voted on this poll.' })
+    }
+
+    if (
+      typeof optionIndex !== 'number' ||
+      optionIndex < 0 ||
+      optionIndex >= (poll.options || []).length
+    ) {
+      return res.status(400).json({ message: 'Invalid poll option.' })
     }
 
     await pollsCollection.updateOne(
@@ -746,48 +1123,128 @@ router.post('/polls/:pollId/vote', async (req, res) => {
         $inc: {
           [`options.${optionIndex}.votes`]: 1
         },
-        $push: { votedBy: normalizedEmail }
+        $push: {
+          votedBy: normalizedEmail
+        }
       }
     )
 
-    res.status(200).json({ message: 'Vote recorded.' })
+    res.status(200).json({ message: 'Vote recorded successfully.' })
   } catch (error) {
     console.error('Vote poll error:', error)
-    res.status(500).json({ message: 'Server error voting.' })
+    res.status(500).json({ message: 'Server error while recording vote.' })
   }
 })
-router.post('/events', async (req, res) => {
+router.get('/matchmaking-requests/:id/messages', async (req, res) => {
   try {
-    const { title, date, location, category, description, image, createdBy } = req.body
+    const { id } = req.params
+    const { email } = req.query
 
-    if (!title || !date || !location || !category || !description) {
-      return res.status(400).json({ message: 'All fields are required.' })
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid request ID.' })
+    }
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required.' })
+    }
+
+    const normalizedEmail = normalizeEmail(email)
+
+    const db = await connectDB()
+    const requestsCollection = db.collection('matchmaking_requests')
+    const messagesCollection = db.collection('matchmaking_messages')
+
+    const requestDoc = await requestsCollection.findOne({ _id: new ObjectId(id) })
+
+    if (!requestDoc) {
+      return res.status(404).json({ message: 'Connection request not found.' })
+    }
+
+    if (requestDoc.status !== 'accepted') {
+      return res.status(400).json({ message: 'Chat is only available for accepted connections.' })
+    }
+
+    const allowedUsers = [requestDoc.fromEmail, requestDoc.toEmail]
+    if (!allowedUsers.includes(normalizedEmail)) {
+      return res.status(403).json({ message: 'You are not allowed to view this chat.' })
+    }
+
+    const messages = await messagesCollection
+      .find({ requestId: id })
+      .sort({ createdAt: 1 })
+      .toArray()
+
+    res.status(200).json(messages)
+  } catch (error) {
+    console.error('Get matchmaking messages error:', error)
+    res.status(500).json({ message: 'Server error while fetching messages.' })
+  }
+})
+
+router.post('/matchmaking-requests/:id/messages', async (req, res) => {
+  try {
+    const { id } = req.params
+    const { email, name, message } = req.body
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid request ID.' })
+    }
+
+    if (!email || !message) {
+      return res.status(400).json({ message: 'Email and message are required.' })
+    }
+
+    const normalizedEmail = normalizeEmail(email)
+    const trimmedMessage = String(message).trim()
+
+    if (!trimmedMessage) {
+      return res.status(400).json({ message: 'Message cannot be empty.' })
     }
 
     const db = await connectDB()
-    const eventsCollection = db.collection('events')
+    const requestsCollection = db.collection('matchmaking_requests')
+    const messagesCollection = db.collection('matchmaking_messages')
 
-    const newEvent = {
-      title: title.trim(),
-      date,
-      location: location.trim(),
-      category: category.trim(),
-      description: description.trim(),
-      image: image ? image.trim() : '',
-      createdBy: createdBy || null,
-      createdAt: new Date(),
-      updatedAt: new Date()
+    const requestDoc = await requestsCollection.findOne({ _id: new ObjectId(id) })
+
+    if (!requestDoc) {
+      return res.status(404).json({ message: 'Connection request not found.' })
     }
 
-    const result = await eventsCollection.insertOne(newEvent)
+    if (requestDoc.status !== 'accepted') {
+      return res.status(400).json({ message: 'Chat is only available for accepted connections.' })
+    }
 
-    res.status(201).json({
-      message: 'Event created successfully.',
-      eventId: result.insertedId
-    })
+    const allowedUsers = [requestDoc.fromEmail, requestDoc.toEmail]
+    if (!allowedUsers.includes(normalizedEmail)) {
+      return res.status(403).json({ message: 'You are not allowed to send messages in this chat.' })
+    }
+
+    const newMessage = {
+      requestId: id,
+      eventId: requestDoc.eventId,
+      senderEmail: normalizedEmail,
+      senderName: name ? String(name).trim() : 'User',
+      message: trimmedMessage,
+      createdAt: new Date()
+    }
+
+    await messagesCollection.insertOne(newMessage)
+
+    await requestsCollection.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          updatedAt: new Date(),
+          read: false
+        }
+      }
+    )
+
+    res.status(201).json({ message: 'Message sent successfully.' })
   } catch (error) {
-    console.error('Create event error:', error)
-    res.status(500).json({ message: 'Server error while creating event.' })
+    console.error('Send matchmaking message error:', error)
+    res.status(500).json({ message: 'Server error while sending message.' })
   }
 })
 

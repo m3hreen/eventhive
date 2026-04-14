@@ -180,24 +180,6 @@
         </div>
       </div>
     </section>
-
-    <section class="how-it-works">
-      <h2>How It Works</h2>
-      <div class="steps-grid">
-        <div class="step-card">
-          <h3>1. Discover</h3>
-          <p>Find exciting events near you with smart search and category filters.</p>
-        </div>
-        <div class="step-card">
-          <h3>2. RSVP</h3>
-          <p>Book tickets or RSVP in seconds and keep all event details in one place.</p>
-        </div>
-        <div class="step-card">
-          <h3>3. Manage</h3>
-          <p>Organizers can track attendance, manage guests, and view event analytics.</p>
-        </div>
-      </div>
-    </section>
   </main>
 </template>
 
@@ -685,8 +667,7 @@ onMounted(async () => {
 }
 
 .featured-section,
-.categories-section,
-.how-it-works {
+.categories-section {
   max-width: 1180px;
   margin: 0 auto;
   padding: 26px 24px 54px;
@@ -695,8 +676,7 @@ onMounted(async () => {
 }
 
 .featured-section h2,
-.categories-section h2,
-.how-it-works h2 {
+.categories-section h2 {
   font-size: 48px;
   margin: 0 0 24px;
   letter-spacing: -1px;
@@ -973,8 +953,7 @@ onMounted(async () => {
   }
 
   .featured-section h2,
-  .categories-section h2,
-  .how-it-works h2 {
+  .categories-section h2 {
     font-size: 38px;
   }
 
@@ -1008,8 +987,7 @@ onMounted(async () => {
   .hero-section,
   .search-preview,
   .featured-section,
-  .categories-section,
-  .how-it-works {
+  .categories-section {
     padding-left: 16px;
     padding-right: 16px;
   }

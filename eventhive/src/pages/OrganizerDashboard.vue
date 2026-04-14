@@ -142,11 +142,10 @@ onMounted(() => {
 <style scoped>
   .dashboard-page {
     min-height: 100vh;
+    padding: 48px 24px 72px;
     color: #243047;
     position: relative;
     overflow: hidden;
-
-    /* keep your soft base color */
     background: linear-gradient(180deg, #f8f5ef 0%, #f6f1ea 100%);
   }
 
@@ -154,9 +153,7 @@ onMounted(() => {
     content: '';
     position: absolute;
     inset: 0;
-
     background: url('/hexagon-background.jpg') center/cover no-repeat;
-
     opacity: 0.50;
     pointer-events: none;
   }
@@ -177,139 +174,176 @@ onMounted(() => {
     filter: blur(22px);
     pointer-events: none;
   }
+
+  .dashboard-container {
+    position: relative;
+    z-index: 2;
+    max-width: 1180px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
   .dashboard-hero {
-    display: grid;
+    position: relative;
+    display: block;
     grid-template-columns: 1.1fr 0.9fr;
     gap: 28px;
     align-items: center;
-    margin-bottom: 28px;
+  }
+
+  .dashboard-hero::after {
+    content: '';
+    position: absolute;
+    width: 320px;
+    height: 320px;
+    right: 80px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(255, 236, 165, 0.35) 0%,
+      rgba(255, 236, 165, 0.12) 45%,
+      transparent 75%
+    );
+    filter: blur(16px);
+    pointer-events: none;
   }
 
   .hero-text {
-    background: rgba(255,255,255,.75);
-    border-radius: 30px;
-    padding: 30px;
-    border: 1px solid rgba(166,134,210,.14);
+    background: rgba(255, 251, 244, 0.9);
+    border-radius: 36px;
+    padding: 34px 36px;
+    box-shadow:
+      0 18px 36px rgba(72, 59, 102, 0.08),
+      0 4px 12px rgba(255, 255, 255, 0.35) inset;
   }
 
   .eyebrow {
+    margin: 0 0 10px;
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 800;
     color: #8b6ec7;
-    margin-bottom: 8px;
     text-transform: uppercase;
+    letter-spacing: 0.4px;
   }
 
-  .hero-image {
-    min-height: 260px;
-    border-radius: 28px;
-    background:
-    linear-gradient(rgba(139,110,199,.15),rgba(247,236,141,.05)),
-    url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d')
-    center/cover;
-  }.dashboard-page {
-    min-height: 100vh;
-    background: linear-gradient(180deg, #f8f5ef 0%, #f6f1ea 100%);
-    padding: 48px 24px 72px;
-  }
-
-  .dashboard-container {
-    max-width: 1180px;
-    margin: 0 auto;
-  }
-
-  h1 {
-    font-size: 58px;
-    line-height: 1.02;
-    letter-spacing: -1.5px;
+  .hero-text h1 {
+    margin: 0 0 14px;
+    font-size: 62px;
+    line-height: 0.95;
+    letter-spacing: -1.8px;
     color: #243047;
-    margin: 0 0 12px;
   }
 
   .dashboard-subtitle {
+    margin: 0;
     font-size: 20px;
+    line-height: 1.55;
     color: #5b6475;
-    margin: 0 0 30px;
+    max-width: 620px;
   }
 
   .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-    margin-bottom: 30px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
   }
 
   .dashboard-card {
-    background: rgba(255, 255, 255, 0.88);
-    border: 1px solid rgba(166, 134, 210, 0.14);
+    position: relative;
+    background: rgba(255, 251, 244, 0.88);
+    backdrop-filter: blur(10px);
     border-radius: 24px;
-    padding: 24px;
-    box-shadow: 0 14px 34px rgba(72, 59, 102, 0.06);
+    padding: 20px 22px;
+    border: 1px solid rgba(166, 134, 210, 0.16);
+    box-shadow: 0 12px 26px rgba(72, 59, 102, 0.06);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .dashboard-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #8b6ec7, #f7ec8d, #f6a93a);
+  }
+
+  .dashboard-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 42px rgba(72, 59, 102, 0.12);
   }
 
   .dashboard-card h2 {
-    font-size: 18px;
-    color: #5b6475;
-    margin: 0 0 10px;
+    margin: 0 0 8px;
+    font-size: 16px;
+    color: #6b7280;
   }
 
   .dashboard-card p {
-    font-size: 32px;
-    font-weight: 800;
-    color: #243047;
-    margin: 0;
+    font-size: 30px;
+    font-weight: 900;
+    color: #5f4aa8;
   }
 
   .dashboard-section {
-    background: rgba(255, 255, 255, 0.84);
-    border: 1px solid rgba(166, 134, 210, 0.14);
-    border-radius: 28px;
+    background: rgba(255, 251, 244, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
     padding: 24px;
-    box-shadow: 0 14px 34px rgba(72, 59, 102, 0.06);
-    margin-bottom: 26px;
+    border: 1px solid rgba(166, 134, 210, 0.16);
+    box-shadow: 0 14px 34px rgba(72, 59, 102, 0.07);
   }
 
   .dashboard-section h2 {
+    margin: 0 0 18px;
+    font-size: 34px;
+    color: #243047;
+  }
+
+  .dashboard-card,
+  .suggestion-card,
+  .hero-text,
+  .dashboard-section {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .dashboard-card:hover,
+  .suggestion-card:hover,
+  .hero-text:hover {
+    transform: translateY(-3px);
+  }
+
+  .suggestion-highlight {
+    background: rgba(255, 255, 255, 0.68);
+    border: 1px solid rgba(166, 134, 210, 0.1);
+    border-radius: 28px;
+    padding: 24px;
+    box-shadow: 0 10px 24px rgba(72, 59, 102, 0.04);
+  }
+
+  .suggestion-highlight h3 {
+    margin: 0 0 10px;
     font-size: 32px;
     color: #243047;
-    margin: 0 0 18px;
-  }
-
-  .suggestion-highlight h3,
-  .suggestion-card h3 {
-    font-size: 26px;
-    color: #243047;
-    margin: 0 0 10px;
-  }
-
-  .suggestion-cards {
-    display: grid;
-    gap: 20px;
-  }
-
-  .suggestion-card {
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(166, 134, 210, 0.14);
-    border-radius: 24px;
-    padding: 22px;
-  }
-
-  .suggestion-card-top {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 16px;
   }
 
   .category-badge {
     display: inline-block;
-    background: rgba(139, 110, 199, 0.12);
-    color: #6f54a8;
-    border: 1px solid rgba(139, 110, 199, 0.18);
-    padding: 8px 14px;
+    margin-bottom: 14px;
+    background: #f2eaff;
+    color: #7a5bc1;
+    border: 1px solid rgba(139, 110, 199, 0.16);
+    padding: 9px 16px;
     border-radius: 999px;
-    font-size: 14px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 800;
   }
 
   .date-pill {
@@ -324,27 +358,78 @@ onMounted(() => {
 
   .suggestion-location,
   .suggestion-details,
-  .suggestion-highlight p,
-  .suggestion-footer {
-    font-size: 17px;
+  .suggestion-highlight p {
+    margin: 0 0 10px;
+    font-size: 16px;
     line-height: 1.6;
     color: #4a5568;
-    margin: 0 0 10px;
   }
 
-  .suggestion-footer {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    margin-top: 12px;
-    font-weight: 600;
+  .suggestion-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
   }
 
-  .empty-state {
-    font-size: 18px;
-    color: #5b6475;
-    margin: 0;
+  .suggestion-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow:
+      0 12px 28px rgba(72, 59, 102, 0.06),
+      0 3px 8px rgba(255, 255, 255, 0.25) inset;
+    border: 1px solid rgba(166, 134, 210, 0.14);
+    border-radius: 28px;
+    padding: 20px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
+
+  .suggestion-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, #8b6ec7 0%, #f7ec8d 55%, #f6a93a 100%);
+}
+
+.suggestion-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 34px rgba(72, 59, 102, 0.1);
+}
+
+.suggestion-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.suggestion-card h3 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  color: #243047;
+}
+
+.suggestion-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(166, 134, 210, 0.12);
+  font-weight: 700;
+  color: #5b6475;
+}
+
+.empty-state {
+  margin: 0;
+  font-size: 18px;
+  color: #5b6475;
+}
 
   @media (max-width: 1024px) {
     .dashboard-grid {
