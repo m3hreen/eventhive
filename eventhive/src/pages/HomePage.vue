@@ -16,8 +16,11 @@
 
       <div class="hero-visual"></div>
     </section>
-
-    <section class="search-preview">
+    
+    
+    <section id="featured" class="featured-section">
+      <h2>Featured Events</h2>
+       <section class="search-preview">
       <div class="search-box">
         <input
   type="text"
@@ -55,8 +58,21 @@
 
     </section>
 
-    <section id="featured" class="featured-section">
-      <h2>Featured Events</h2>
+    <section class="categories-section">
+      <div class="categories-grid">
+        <button
+          v-for="cat in categories"
+          :key="cat"
+          class="category-card"
+          :class="{ active: selectedCategory === cat }"
+          @click="filterByCategory(cat)"
+          type="button"
+        >
+          <span class="category-name">{{ cat }}</span>
+          <span class="category-count">{{ countByCategory(cat) }} events</span>
+        </button>
+      </div>
+    </section>
 
       <div v-if="loading" class="empty-state">
        <p>Loading events…</p>
@@ -118,16 +134,6 @@
         <button class="secondary-btn" @click="resetFilters">Clear filters</button>
       </div>
 
-    </section>
-
-    <section id="categories" class="categories-section">
-      <h2>Browse by Category</h2>
-      <div class="categories-grid">
-        <div class="category-card" v-for="category in categories" :key="category" :class="{ active: selectedCategory === category }" @click="filterByCategory(category)">
-          <span class="cat-label">{{ category }}</span>
-          <span class="cat-count">{{ countByCategory(category) }} events</span>
-        </div>
-      </div>
     </section>
 
     <section class="featured-section">
@@ -793,33 +799,81 @@ onMounted(async () => {
 }
 
 .categories-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
 }
 
 .category-card {
-  background: rgba(255, 255, 255, 0.78);
-  border: 1px solid rgba(166, 134, 210, 0.14);
-  border-radius: 24px;
-  padding: 28px 16px;
-  text-align: center;
-  font-weight: 800;
-  font-size: 18px;
-  color: #243047;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(166, 134, 210, 0.18);
+  border-radius: 18px;
   box-shadow: 0 12px 28px rgba(72, 59, 102, 0.05);
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+  width: 150px;
+  padding: 14px 12px;
+  text-align: center;
 }
 
 .category-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 32px rgba(72, 59, 102, 0.08);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 34px rgba(72, 59, 102, 0.1);
+  border-color: rgba(139, 110, 199, 0.35);
+}
+
+.category-card.active {
+  background: linear-gradient(135deg, #8b6ec7, #d49a77);
+  color: white;
+  border: none;
+}
+
+.category-card.active .category-name,
+.category-card.active .category-count {
+  color: white;
+}
+
+.category-name {
+  display: block;
+  font-size: 15px;   
+  font-weight: 800;
+  color: #243047;
+  margin-bottom: 6px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;   
+  justify-content: center;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.empty-state .secondary-btn {
+  background: linear-gradient(135deg, #8b6ec7, #d49a77);
+  color: white;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 20px;
+  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(139, 110, 199, 0.2);
+}
+
+.empty-state p {
+  font-size: 18px;
+  font-weight: 600;
+  color: #5b6475;
+  margin-bottom: 12px;
+}
+
+.category-count {
+  font-size: 12px;
+  color: #5b6475;
+}
+.categories-section {
+  padding: 20px 24px 40px; 
 }
 
 .like-row {
