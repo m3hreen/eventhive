@@ -6,7 +6,7 @@ EventHive is a full-stack web application that allows users to discover, create,
 
 ---
 
-## 📦 Pre-requisites
+## Pre-requisites
 
 Make sure the following are installed:
 
@@ -28,7 +28,7 @@ cd ..
 npm install concurrently --save-dev
 ```
 
-## ▶️ How to Run
+## How to Run
 
 From the project root folder, run:
 
@@ -41,7 +41,7 @@ npm run dev:all
 - Frontend: runs on Vite, usually at `http://localhost:5173`
 - Backend: runs on Express, usually at `http://localhost:5001`
 
-⚠️ **The backend must be running for:**
+ **The backend must be running for:**
 
 - login/signup
 - RSVP
@@ -50,7 +50,7 @@ npm run dev:all
 - matchmaking
 - reminders
 
-## 🧠 Project Overview
+## Project Overview
 
 EventHive creates a complete event experience for both attendees and organizers.
 
@@ -70,9 +70,9 @@ EventHive creates a complete event experience for both attendees and organizers.
 - send reminders
 - analyze RSVPs and poll results using D3 visualizations
 
-## 🚀 Features
+## Features
 
-### 📅 Event Management
+### Event Management
 
 Create events with:
 
@@ -96,7 +96,7 @@ Filter by:
 - Date (year/month/day)
 - Location
 
-### ✅ RSVP System
+### RSVP System
 
 RSVP as:
 
@@ -107,41 +107,41 @@ RSVP as:
 Organizer guest tracking  
 Recent RSVP activity display
 
-### 🤝 Event Matchmaking
+### Event Matchmaking
 
 Connect with attendees with similar interests  
 Send connection requests  
 Accept or decline requests  
 Chat via inbox messaging system
 
-### 📊 Guest Analytics (D3)
+### Guest Analytics (D3)
 
 RSVP breakdown bar chart  
 Poll results pie chart  
 Built using D3.js (SVG-based visualizations)  
 Dynamic data updates
 
-### 🗳️ Poll System
+### Poll System
 
 Organizers create polls  
 Attendees vote  
 Results stored in MongoDB  
 Visualized using D3 charts
 
-### 💡 Suggestions System
+### Suggestions System
 
 Attendees submit event ideas  
 Community can view and like suggestions  
 Helps organizers understand demand
 
-### 📥 Inbox System
+### Inbox System
 
 Event reminders  
 Matchmaking requests  
 Chat messaging  
 Read/unread notifications
 
-## 💾 Persistent Data
+## Persistent Data
 
 Stored in MongoDB:
 
@@ -155,7 +155,7 @@ Stored in MongoDB:
 - Messages
 - Reminders
 
-## 👥 User Roles
+## User Roles
 
 **Everyone**
 
@@ -184,7 +184,7 @@ Stored in MongoDB:
 - View analytics
 - Send reminders
 
-## 🎨 UI and UX
+## UI and UX
 
 Responsive design  
 Custom CSS styling  
@@ -192,7 +192,7 @@ Dynamic DOM updates using Vue
 Smooth animations  
 Clean dashboard layouts
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 **Frontend**
 
@@ -238,13 +238,13 @@ eventhive/
 └── package files
 ```
 
-## ⚠️ Notes for Running
+## Notes for Running
 
 - MongoDB Atlas must be connected correctly
 - Backend must be running for full functionality
 - If the app does not run locally, refer to the demo video
 
-## 🎥 Demo Requirements
+## Demo Requirements
 
 The demo video should show:
 
@@ -258,20 +258,19 @@ The demo video should show:
 - inbox messaging
 - notifications
 
-## 🔮 Future Improvements
+## Future Improvements
 
 - Real-time messaging with Socket.io
 - Image uploads instead of URLs
 - Advanced notifications
-- Event recommendations
 - Calendar integration
 - Improved mobile UX
 
-## 📸 Images
+## Images
 
-Add screenshots here if needed.
 
-## 👨‍💻 Contributors
+
+## Contributors
 
 - Malasa Khan
 - Mehreen Morshed
