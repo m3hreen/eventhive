@@ -13,11 +13,11 @@
 ## Table of Contents
 
 - [Features](#features)
-- [Tech Stack](#️tech-stack)
+- [Tech Stack](#tech-stack)
 - [Installation](#installation)
 - [Running the App](#running-the-app)
 - [User Roles](#user-roles)
-- [Database Schema](#️database-schema)
+- [Database Schema](#database-schema)
 - [Project Structure](#project-structure)
 - [Future Roadmap](#future-roadmap)
 - [Contributors](#contributors)
