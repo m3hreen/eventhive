@@ -128,3 +128,43 @@ async function handleSubmit() {
   }
 }
 </script>
+
+<style scoped>
+.create-event-page {
+  min-height: 100vh;
+  color: #243047;
+  position: relative;
+  overflow: hidden;
+
+  /* keep your soft base color */
+  background: linear-gradient(180deg, #f8f5ef 0%, #f6f1ea 100%);
+}
+
+.create-event-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+
+  background: url('/hexagon-background.jpg') center/cover no-repeat;
+
+  opacity: 0.50;
+  pointer-events: none;
+}
+
+.create-event-page::after {
+  content: '';
+  position: absolute;
+  top: 520px;
+  right: -70px;
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(
+    circle,
+    rgba(246, 169, 58, 0.1) 0%,
+    rgba(166, 134, 210, 0.12) 42%,
+    transparent 75%
+  );
+  filter: blur(22px);
+  pointer-events: none;
+}
+</style>
