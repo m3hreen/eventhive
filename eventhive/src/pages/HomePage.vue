@@ -575,6 +575,12 @@ onMounted(async () => {
   z-index: 1;
 }
 
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .hero-content h1 {
   font-size: 70px;
   line-height: 0.98;
@@ -589,13 +595,20 @@ onMounted(async () => {
   line-height: 1.55;
   color: #5b6475;
   max-width: 560px;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
 }
 
 .hero-buttons {
-  display: flex;
+ display: flex;
   gap: 14px;
-  flex-wrap: wrap;
+  justify-content: flex-start; /* key */
+  align-items: flex-start;
+  margin-top: 8px;
+}
+
+.hero-buttons .primary-btn {
+  align-self: flex-start;
+  min-width: 220px;
 }
 
 .primary-btn,
