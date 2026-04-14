@@ -109,11 +109,16 @@
 
             <div class="like-row">
               <button
-                type="button"
-                class="submit-btn like-btn"
+                class="like-btn"
+                :class="{ liked: suggestion.liked }"
                 @click="likeSuggestion(suggestion._id)"
+                type="button"
               >
-                👍 Like
+                <img
+                  :src="suggestion.liked ? '/heart-filled.svg' : '/heart-outlined.svg'"
+                  :alt="suggestion.liked ? 'Liked' : 'Not liked'"
+                  class="like-icon"
+                />
               </button>
 
               <span class="like-count">
@@ -153,7 +158,16 @@ async function fetchSuggestions() {
       return
     }
 
-    suggestions.value = data
+    const savedUser = localStorage.getItem('eventhiveUser')
+    const user = savedUser ? JSON.parse(savedUser) : null
+
+    suggestions.value = data.map(s => ({
+      ...s,
+      liked: user?.email
+        ? (s.likedBy || []).includes(user.email.toLowerCase())
+        : false
+    }))
+
   } catch (error) {
     console.error('Fetch suggestions error:', error)
   }
@@ -209,22 +223,26 @@ async function handleSubmit() {
 }
 
 async function likeSuggestion(id) {
+  const suggestion = suggestions.value.find(s => s._id === id)
+  if (!suggestion) return
+
+  const savedUser = localStorage.getItem('eventhiveUser')
+  const user = savedUser ? JSON.parse(savedUser) : null
+
+  if (!user?.email) {
+    errorMessage.value = 'You must be logged in to like a suggestion.'
+    return
+  }
+
   try {
-    const savedUser = localStorage.getItem('eventhiveUser')
-    const user = savedUser ? JSON.parse(savedUser) : null
-
-    if (!user?.email) {
-      errorMessage.value = 'You must be logged in to like a suggestion.'
-      return
-    }
-
-    const response = await fetch(`http://localhost:5001/api/suggestions/${id}/like`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: user.email
-      })
-    })
+    const response = await fetch(
+      `http://localhost:5001/api/suggestions/${id}/like`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email })
+      }
+    )
 
     const data = await response.json()
 
@@ -233,9 +251,10 @@ async function likeSuggestion(id) {
       return
     }
 
-    message.value = 'Suggestion liked successfully.'
-    errorMessage.value = ''
-    fetchSuggestions()
+    // update UI instantly
+    suggestion.liked = data.liked
+    suggestion.likes = data.likes
+
   } catch (error) {
     console.error('Like suggestion error:', error)
     errorMessage.value = 'Could not connect to the server.'
@@ -473,6 +492,26 @@ onMounted(() => {
 .like-count {
   font-weight: 600;
   color: #444;
+}
+
+.like-btn {
+  background: transparent;
+  border: none;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.like-btn:hover {
+  transform: scale(1.08);
+}
+
+.like-icon {
+  width: 28px;
+  height: 28px;
 }
 
 @media (max-width: 900px) {
