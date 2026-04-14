@@ -600,5 +600,105 @@ router.get('/saved-events', async (req, res) => {
     res.status(500).json({ message: 'Server error while fetching saved events.' })
   }
 })
+router.post('/events/:id/polls', async (req, res) => {
+  try {
+    const { id } = req.params
+    const { question, options, createdBy } = req.body
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid event ID.' })
+    }
+
+    if (!question || !options || options.length < 2) {
+      return res.status(400).json({ message: 'Poll question and options required.' })
+    }
+
+    const db = await connectDB()
+    const pollsCollection = db.collection('polls')
+
+    const poll = {
+      eventId: id,
+      question: question.trim(),
+      options: options.map(o => ({
+        text: o.trim(),
+        votes: 0
+      })),
+      votedBy: [],
+      createdBy,
+      createdAt: new Date()
+    }
+
+    await pollsCollection.insertOne(poll)
+
+    res.status(201).json({ message: 'Poll created successfully.' })
+  } catch (error) {
+    console.error('Create poll error:', error)
+    res.status(500).json({ message: 'Server error creating poll.' })
+  }
+})
+
+
+router.get('/events/:id/polls', async (req, res) => {
+  try {
+    const { id } = req.params
+
+    const db = await connectDB()
+    const pollsCollection = db.collection('polls')
+
+    const polls = await pollsCollection
+      .find({ eventId: id })
+      .sort({ createdAt: -1 })
+      .toArray()
+
+    res.status(200).json(polls)
+  } catch (error) {
+    console.error('Get polls error:', error)
+    res.status(500).json({ message: 'Server error fetching polls.' })
+  }
+})
+
+
+router.post('/polls/:pollId/vote', async (req, res) => {
+  try {
+    const { pollId } = req.params
+    const { optionIndex, email } = req.body
+
+    if (!ObjectId.isValid(pollId)) {
+      return res.status(400).json({ message: 'Invalid poll ID.' })
+    }
+
+    const db = await connectDB()
+    const pollsCollection = db.collection('polls')
+
+    const poll = await pollsCollection.findOne({
+      _id: new ObjectId(pollId)
+    })
+
+    if (!poll) {
+      return res.status(404).json({ message: 'Poll not found.' })
+    }
+
+    const normalizedEmail = email.trim().toLowerCase()
+
+    if (poll.votedBy?.includes(normalizedEmail)) {
+      return res.status(400).json({ message: 'Already voted.' })
+    }
+
+    await pollsCollection.updateOne(
+      { _id: new ObjectId(pollId) },
+      {
+        $inc: {
+          [`options.${optionIndex}.votes`]: 1
+        },
+        $push: { votedBy: normalizedEmail }
+      }
+    )
+
+    res.status(200).json({ message: 'Vote recorded.' })
+  } catch (error) {
+    console.error('Vote poll error:', error)
+    res.status(500).json({ message: 'Server error voting.' })
+  }
+})
 
 module.exports = router
