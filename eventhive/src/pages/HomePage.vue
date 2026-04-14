@@ -12,7 +12,13 @@
           <button class="primary-btn" @click="scrollToFeatured">
             Explore Events
           </button>
-          <router-link :to="createEventLink" class="secondary-btn">Create an Event</router-link>
+          <router-link
+            v-if="currentUser && currentUser.role === 'organizer'"
+            to="/create-event"
+            class="secondary-btn"
+          >
+            Create an Event
+          </router-link>
         </div>
       </div>
 
