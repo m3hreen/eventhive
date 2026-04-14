@@ -118,23 +118,21 @@ npm run dev:all
 <tr>
 <td>
 
-- Browse/search events
+- Browse/filter events
 - View event details
 - RSVP
 - Save events
 - Vote on polls
-- Connect with attendees
-- Use inbox
-- View suggestions
+- Matchmaking: Connect with attendees
+- Use inbox & messaging
+- View/like community suggestions
 
 </td>
 <td>
 
 - Submit event suggestions
 - Access MySuggestions page
-- View dashboard activity
-- Use matchmaking & messaging
-- Like suggestion posts
+- View upcoming events and recent activity on dashboard
 
 </td>
 <td>
@@ -145,7 +143,7 @@ npm run dev:all
 - Access guest lists
 - View analytics (D3 charts)
 - Send reminders
-- Like suggestion posts
+- View top event requests on dashboard
 
 </td>
 </tr>
@@ -176,11 +174,15 @@ Reminders
 ```
 eventhive/
 │
+├── public/                    # SVG icons
+│   
+├── screenshots/               # screenshots for readme.md
+│   
 ├── src/                    # Frontend (Vue 3)
 │   ├── pages/                 # Page components
 │   ├── components/            # Reusable Vue components
 │   ├── router/                # Vue Router config
-│   └── assets/                # CSS, images, etc.
+│   └── assets/                # CSS, images, SVG logo
 │
 ├── backend/                # Backend (Node.js + Express)
 │   ├── routes/                # API endpoints
@@ -196,7 +198,7 @@ eventhive/
 
 - Real-time messaging with **Socket.io**
 - Image uploads (instead of URLs) via Cloudinary
-- Push & email notifications\
+- Push & email notifications
 - AI-powered event recommendations
 - Google Calendar / iCal integration
 - Mobile-responsive PWA
@@ -205,7 +207,40 @@ eventhive/
 
 ## Screenshots
 
+<div align="center">
 
+<table>
+  <tr>
+    <td align="center">
+      <img src="screenshots/burger-menu.png" width="250"/><br/>
+      <sub><b>Burger Menu</b></sub>
+    </td>
+    <td align="center">
+      <img src="screenshots/featured-events.png" width="250"/><br/>
+      <sub><b>Featured Events</b></sub>
+    </td>
+    <td align="center">
+      <img src="screenshots/landing-page.png" width="250"/><br/>
+      <sub><b>Landing Page</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="screenshots/log-in.png" width="250"/><br/>
+      <sub><b>Login Page</b></sub>
+    </td>
+    <td align="center">
+      <img src="screenshots/poll-results.png" width="250"/><br/>
+      <sub><b>Poll Results</b></sub>
+    </td>
+    <td align="center">
+      <img src="screenshots/rsvp-analytics.png" width="250"/><br/>
+      <sub><b>RSVP Analytics</b></sub>
+    </td>
+  </tr>
+</table>
+
+</div>
 
 ---
 

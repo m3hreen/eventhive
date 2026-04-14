@@ -444,12 +444,14 @@ function drawPieChart() {
     .scaleOrdinal()
     .domain(data.map(d => d.label))
     .range([
-      '#564373',
+      '#a790c6',
       '#7d6cb1',
       '#a595d4',
       '#c4b8e6',
       '#ded6f5',
-      '#d49a77'
+      '#e3a44c',
+      '#c8882e',
+      '#bd7b1e'
     ])
 
   const pie = d3
@@ -487,7 +489,7 @@ function drawPieChart() {
     .style('font-size', '12px')
     .style('fill', '#243047')
     .style('font-weight', '600')
-    .text(d => d.data.value > 0 ? d.data.value : '')
+    .text(d => d.data.value > 0 ? `${d.data.label} (${d.data.value})` : '')
 }
 
 onMounted(async () => {
