@@ -4,38 +4,69 @@ const connectDB = require('../db/mongodb')
 
 const router = express.Router()
 
-router.post('/events', async (req, res) => {
+router.post('/suggestions/:id/like', async (req, res) => {
   try {
-    const { title, date, location, category, description, image, createdBy } = req.body
+    const { id } = req.params
+    const { email } = req.body
 
-    if (!title || !date || !location || !category || !description) {
-      return res.status(400).json({ message: 'All fields are required.' })
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid suggestion ID.' })
     }
+
+    if (!email) {
+      return res.status(400).json({ message: 'User email is required.' })
+    }
+
+    const normalizedEmail = email.trim().toLowerCase()
 
     const db = await connectDB()
-    const eventsCollection = db.collection('events')
+    const suggestionsCollection = db.collection('suggestions')
 
-    const newEvent = {
-      title: title.trim(),
-      date,
-      location: location.trim(),
-      category: category.trim(),
-      description: description.trim(),
-      image: image ? image.trim() : '',
-      createdBy: createdBy || null,
-      createdAt: new Date(),
-      updatedAt: new Date()
+    const suggestion = await suggestionsCollection.findOne({ _id: new ObjectId(id) })
+
+    if (!suggestion) {
+      return res.status(404).json({ message: 'Suggestion not found.' })
     }
 
-    const result = await eventsCollection.insertOne(newEvent)
+    const likedBy = suggestion.likedBy || []
+    const alreadyLiked = likedBy.includes(normalizedEmail)
 
-    res.status(201).json({
-      message: 'Event created successfully.',
-      eventId: result.insertedId
+    if (alreadyLiked) {
+      await suggestionsCollection.updateOne(
+        { _id: new ObjectId(id) },
+        {
+          $inc: { likes: -1 },
+          $pull: { likedBy: normalizedEmail }
+        }
+      )
+
+      const updatedSuggestion = await suggestionsCollection.findOne({ _id: new ObjectId(id) })
+
+      return res.status(200).json({
+        message: 'Suggestion unliked successfully.',
+        liked: false,
+        likes: updatedSuggestion.likes || 0
+      })
+    }
+
+    await suggestionsCollection.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $inc: { likes: 1 },
+        $push: { likedBy: normalizedEmail }
+      }
+    )
+
+    const updatedSuggestion = await suggestionsCollection.findOne({ _id: new ObjectId(id) })
+
+    res.status(200).json({
+      message: 'Suggestion liked successfully.',
+      liked: true,
+      likes: updatedSuggestion.likes || 0
     })
   } catch (error) {
-    console.error('Create event error:', error)
-    res.status(500).json({ message: 'Server error while creating event.' })
+    console.error('Toggle suggestion like error:', error)
+    res.status(500).json({ message: 'Server error while updating suggestion like.' })
   }
 })
 
@@ -440,48 +471,6 @@ router.get('/suggestions', async (req, res) => {
   }
 })
 
-router.post('/suggestions/:id/like', async (req, res) => {
-  try {
-    const { id } = req.params
-    const { email } = req.body
-
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ message: 'Invalid suggestion ID.' })
-    }
-
-    if (!email) {
-      return res.status(400).json({ message: 'User email is required.' })
-    }
-
-    const normalizedEmail = email.trim().toLowerCase()
-
-    const db = await connectDB()
-    const suggestionsCollection = db.collection('suggestions')
-
-    const suggestion = await suggestionsCollection.findOne({ _id: new ObjectId(id) })
-
-    if (!suggestion) {
-      return res.status(404).json({ message: 'Suggestion not found.' })
-    }
-
-    if ((suggestion.likedBy || []).includes(normalizedEmail)) {
-      return res.status(400).json({ message: 'You already liked this suggestion.' })
-    }
-
-    await suggestionsCollection.updateOne(
-      { _id: new ObjectId(id) },
-      {
-        $inc: { likes: 1 },
-        $push: { likedBy: normalizedEmail }
-      }
-    )
-
-    res.status(200).json({ message: 'Suggestion liked successfully.' })
-  } catch (error) {
-    console.error('Like suggestion error:', error)
-    res.status(500).json({ message: 'Server error while liking suggestion.' })
-  }
-})
 
 router.post('/events/:id/save', async (req, res) => {
   try {

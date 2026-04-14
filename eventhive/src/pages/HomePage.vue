@@ -147,10 +147,17 @@
 
           <div class="like-row">
             <button
-              class="secondary-btn small-btn"
+              class="like-btn"
+              :class="{ liked: s.liked }"
               @click="likeSuggestion(s._id)"
+              type="button"
+              :aria-label="s.liked ? 'Unlike suggestion' : 'Like suggestion'"
             >
-              👍 Like
+              <img
+                :src="s.liked ? '/heart-filled.svg' : '/heart-outlined.svg'"
+                :alt="s.liked ? 'Liked' : 'Not liked'"
+                class="like-icon"
+              />
             </button>
 
             <span class="like-count">
@@ -305,7 +312,6 @@ if (event.date) {
 
 }
 
-
 const resetFilters = () => {
   selectedCategory.value = ''
   filterCategory.value = ''
@@ -384,7 +390,14 @@ async function loadSuggestions() {
       return
     }
 
-    suggestions.value = data
+    const savedUser = localStorage.getItem('eventhiveUser')
+    const user = savedUser ? JSON.parse(savedUser) : null
+
+    suggestions.value = data.map(s => ({
+      ...s,
+      liked: user?.email ? (s.likedBy || []).includes(user.email.toLowerCase()) : false
+    }))
+
   } catch (e) {
     console.error('suggestions error', e)
     suggestions.value = []
@@ -392,15 +405,18 @@ async function loadSuggestions() {
 }
 
 async function likeSuggestion(id) {
+  const suggestion = suggestions.value.find(s => s._id === id)
+  if (!suggestion) return
+
+  const savedUser = localStorage.getItem('eventhiveUser')
+  const user = savedUser ? JSON.parse(savedUser) : null
+
+  if (!user?.email) {
+    alert('Please log in first.')
+    return
+  }
+
   try {
-    const savedUser = localStorage.getItem('eventhiveUser')
-    const user = savedUser ? JSON.parse(savedUser) : null
-
-    if (!user?.email) {
-      alert('Please log in first.')
-      return
-    }
-
     const response = await fetch(
       `http://localhost:5001/api/suggestions/${id}/like`,
       {
@@ -413,11 +429,12 @@ async function likeSuggestion(id) {
     const data = await response.json()
 
     if (!response.ok) {
-      alert(data.message || 'Could not like suggestion.')
+      alert(data.message || 'Could not update like.')
       return
     }
 
-    await loadSuggestions()
+    suggestion.liked = data.liked
+    suggestion.likes = data.likes
   } catch (e) {
     console.error('like error', e)
     alert('There was a connection error.')
@@ -803,6 +820,33 @@ onMounted(async () => {
   line-height: 1.6;
   color: #5b6475;
   margin: 0;
+}
+
+.like-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.like-btn:hover {
+  transform: scale(1.08);
+}
+
+.like-btn.liked {
+  transform: scale(1.08);
+}
+
+.like-icon {
+  width: 28px;
+  height: 28px;
+  display: block;
 }
 
 @media (max-width: 960px) {
