@@ -98,12 +98,17 @@
             </router-link>
 
             <button
-  v-if="currentUser && currentUser.email !== event.createdBy"
-  class="secondary-btn small-btn"
-  @click="saveEvent(event._id || event.id)"
->
-  Save
-</button>
+              v-if="currentUser && currentUser.email !== event.createdBy"
+              class="save-btn"
+              @click="toggleSave(event)"
+              type="button"
+            >
+              <img
+                :src="event.saved ? '/save-filled.svg' : '/save-outlined.svg'"
+                :alt="event.saved ? 'Saved' : 'Not saved'"
+                class="save-icon"
+              />
+            </button>
           </div>
         </div>
       </div>
@@ -404,6 +409,32 @@ async function loadSuggestions() {
   }
 }
 
+async function loadSavedEvents() {
+  const savedUser = localStorage.getItem('eventhiveUser')
+  const user = savedUser ? JSON.parse(savedUser) : null
+
+  if (!user?.email) return
+
+  try {
+    const res = await fetch(
+      `http://localhost:5001/api/saved-events?email=${user.email}`
+    )
+    const savedEvents = await res.json()
+
+    const savedIds = savedEvents.map(e => e._id)
+
+    allEvents.value = allEvents.value.map(e => ({
+      ...e,
+      saved: savedIds.includes(e._id)
+    }))
+
+    events.value = allEvents.value
+
+  } catch (e) {
+    console.error('load saved error', e)
+  }
+}
+
 async function likeSuggestion(id) {
   const suggestion = suggestions.value.find(s => s._id === id)
   if (!suggestion) return
@@ -441,7 +472,7 @@ async function likeSuggestion(id) {
   }
 }
 
-async function saveEvent(eventId) {
+async function toggleSave(event) {
   try {
     const savedUser = localStorage.getItem('eventhiveUser')
     const user = savedUser ? JSON.parse(savedUser) : null
@@ -451,10 +482,14 @@ async function saveEvent(eventId) {
       return
     }
 
+    const eventId = event._id || event.id
+
+    const method = event.saved ? 'DELETE' : 'POST'
+
     const response = await fetch(
       `http://localhost:5001/api/events/${eventId}/save`,
       {
-        method: 'POST',
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: user.email })
       }
@@ -463,14 +498,16 @@ async function saveEvent(eventId) {
     const data = await response.json()
 
     if (!response.ok) {
-      alert(data.message || 'Could not save event.')
+      alert(data.message || 'Could not update save.')
       return
     }
 
-    alert('Event saved!')
+    // toggle state locally
+    event.saved = !event.saved
+
   } catch (error) {
-    console.error('Save event error:', error)
-    alert('There was a connection error.')
+    console.error('Save toggle error:', error)
+    alert('Connection error.')
   }
 }
 
@@ -481,6 +518,8 @@ onMounted(async () => {
     loadEvents(),
     loadSuggestions()
   ])
+
+  await loadSavedEvents()
 
   $('#locationFilter').on('keydown', function (e) {
     if (e.key === 'Enter') $('#filterBtn').trigger('click')
@@ -879,6 +918,27 @@ onMounted(async () => {
   .steps-grid {
     grid-template-columns: 1fr;
   }
+}
+
+.save-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  transform: scale(1.08);
+}
+
+.save-icon {
+  width: 26px;
+  height: 26px;
 }
 
 @media (max-width: 768px) {
