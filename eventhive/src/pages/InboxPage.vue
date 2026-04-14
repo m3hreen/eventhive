@@ -249,6 +249,9 @@ async function markAsRead(id) {
     reminders.value = reminders.value.map(reminder =>
       reminder._id === id ? { ...reminder, read: true } : reminder
     )
+
+    window.dispatchEvent(new Event('inbox-updated'))
+
   } catch (error) {
     console.error('Mark reminder read error:', error)
     errorMessage.value = 'Could not connect to the server.'
@@ -271,6 +274,9 @@ async function markRequestAsRead(id) {
     connectionRequests.value = connectionRequests.value.map(request =>
       request._id === id ? { ...request, read: true } : request
     )
+
+    window.dispatchEvent(new Event('inbox-updated'))
+
   } catch (error) {
     console.error('Mark connection request read error:', error)
     errorMessage.value = 'Could not connect to the server.'
@@ -300,6 +306,8 @@ async function respondToRequest(id, action) {
         ? { ...request, status: action, read: true }
         : request
     )
+    window.dispatchEvent(new Event('inbox-updated'))
+
   } catch (error) {
     console.error('Respond connection request error:', error)
     errorMessage.value = 'Could not connect to the server.'

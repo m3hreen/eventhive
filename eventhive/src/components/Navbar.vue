@@ -43,7 +43,15 @@
           </div>
         </div>
 
-        <router-link to="/inbox" class="nav-link" @click="closeMenu">Inbox</router-link>
+        <router-link to="/inbox" class="nav-link inbox-link" @click="closeMenu">
+          <span class="inbox-text">Inbox</span>
+          <img
+            v-if="hasUnreadInbox"
+            src="/bee-alert.svg"
+            alt="Unread inbox messages"
+            class="inbox-alert-icon"
+          />
+        </router-link>
       </template>
 
         <template v-if="user && user.role === 'organizer'">
@@ -86,8 +94,36 @@ import logo from '../assets/logo.svg'
 const router = useRouter()
 const currentUser = ref(null)
 const isMenuOpen = ref(false)
-
 const isMyOpen = ref(false)
+const hasUnreadInbox = ref(false)
+
+async function checkUnreadInbox() {
+  try {
+    const savedUser = localStorage.getItem('eventhiveUser')
+    const user = savedUser ? JSON.parse(savedUser) : null
+
+    if (!user?.email) {
+      hasUnreadInbox.value = false
+      return
+    }
+
+    const res = await fetch(
+      `http://localhost:5001/api/reminders?email=${encodeURIComponent(user.email)}`
+    )
+
+    const data = await res.json()
+
+    if (!res.ok || !Array.isArray(data)) {
+      hasUnreadInbox.value = false
+      return
+    }
+
+    hasUnreadInbox.value = data.some(item => item.read === false)
+  } catch (error) {
+    console.error('Error checking unread inbox messages:', error)
+    hasUnreadInbox.value = false
+  }
+}
 
 function closeAllMenus() {
   isMyOpen.value = false
@@ -136,13 +172,17 @@ function handleLogout() {
 
 function handleStorageChange() {
   loadUser()
+  checkUnreadInbox()
 }
 
 onMounted(() => {
   loadUser()
+  checkUnreadInbox()
+
   window.addEventListener('storage', handleStorageChange)
   window.addEventListener('user-auth-changed', handleStorageChange)
   window.addEventListener('resize', handleResize)
+  window.addEventListener('inbox-updated', checkUnreadInbox)
 
   document.addEventListener('click', handleClickOutside)
 })
@@ -151,6 +191,7 @@ onUnmounted(() => {
   window.removeEventListener('storage', handleStorageChange)
   window.removeEventListener('user-auth-changed', handleStorageChange)
   window.removeEventListener('resize', handleResize)
+  window.removeEventListener('inbox-updated', checkUnreadInbox)
 
   document.removeEventListener('click', handleClickOutside)
 })
@@ -172,6 +213,21 @@ onUnmounted(() => {
 .nav-link:hover {
   color: #f7d774;
   background: rgba(0, 0, 0, 0.25);
+}
+
+.inbox-link.nav-link:hover {
+  background: transparent;
+}
+
+.inbox-text {
+  padding: 4px 6px;
+  border-radius: 6px;
+  margin-right: -4px;
+}
+
+.inbox-link:hover .inbox-text {
+  background: rgba(0, 0, 0, 0.25);
+  color: #f7d774;
 }
 
 .user-greeting {
@@ -242,6 +298,31 @@ onUnmounted(() => {
 .dropdown-item:hover {
   background: rgba(0, 0, 0, 0.25);
   color: #f7d774;
+}
+
+.inbox-link {
+  gap: 0 !important;
+}
+
+.inbox-alert-icon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  position: relative;
+  top: -6px;
+  animation: bee-bounce 1s infinite;
+}
+
+@keyframes bee-bounce {
+  0%, 100% {
+    transform: translateY(-3px);
+  }
+  30% {
+    transform: translateY(-7px);
+  }
+  60% {
+    transform: translateY(-1px);
+  }
 }
 
 @media (max-width: 900px) {
