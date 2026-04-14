@@ -129,15 +129,23 @@
               </tbody>
             </table>
           </div>
+          
+          <section class="analytics-card">
+            <h2>Guest RSVP Analytics</h2>
+            <div ref="chartContainer" class="chart-container"></div>
+          </section>
         </template>
       </div>
     </main>
   </template>
   
   <script setup>
-  import { computed, onMounted, ref } from 'vue'
+  import * as d3 from 'd3'
+  import { ref, computed, onMounted, watch, nextTick } from 'vue'
   import { useRoute } from 'vue-router'
+
   
+  const chartContainer = ref(null)
   const route = useRoute()
   
   const loading = ref(true)
@@ -255,6 +263,103 @@
   onMounted(() => {
     fetchGuestList()
   })
+  const rsvpData = computed(() => {
+    const counts = {
+      attending: 0,
+      maybe: 0,
+      declined: 0
+    }
+
+    guests.value.forEach(g => {
+      const status = (g.status || '').toLowerCase().trim()
+
+      if (counts[status] !== undefined) {
+        counts[status]++
+      }
+    })
+
+    return [
+      { label: 'Attending', value: counts.attending },
+      { label: 'Maybe', value: counts.maybe },
+      { label: 'Declined', value: counts.declined }
+    ]
+  })
+  
+  function drawChart() {
+    if (!chartContainer.value) return
+
+    d3.select(chartContainer.value).selectAll('*').remove()
+
+    const data = rsvpData.value
+
+    const width = 500
+    const height = 300
+    const margin = { top: 20, right: 20, bottom: 50, left: 50 }
+
+    const svg = d3
+      .select(chartContainer.value)
+      .append('svg')
+      .attr('width', width)
+      .attr('height', height)
+
+    const x = d3
+      .scaleBand()
+      .domain(data.map(d => d.label))
+      .range([margin.left, width - margin.right])
+      .padding(0.3)
+
+    const y = d3
+      .scaleLinear()
+      .domain([0, d3.max(data, d => d.value) || 1])
+      .nice()
+      .range([height - margin.bottom, margin.top])
+
+    svg
+      .append('g')
+      .attr('transform', `translate(0,${height - margin.bottom})`)
+      .call(d3.axisBottom(x))
+
+    svg
+      .append('g')
+      .attr('transform', `translate(${margin.left},0)`)
+      .call(d3.axisLeft(y))
+
+    const colours = {
+      Attending: '#564373',   
+      Maybe: '#7d6cb1',       
+      Declined: '#a595d4'     
+    }
+    svg
+      .selectAll('rect')
+      .data(data)
+      .enter()
+      .append('rect')
+      .attr('x', d => x(d.label))
+      .attr('y', d => y(d.value))
+      .attr('width', x.bandwidth())
+      .attr('height', d => height - margin.bottom - y(d.value))
+      .attr('fill', d => colours[d.label]) 
+
+    svg
+      .selectAll('.bar-label')
+      .data(data)
+      .enter()
+      .append('text')
+      .attr('class', 'bar-label')
+      .attr('x', d => x(d.label) + x.bandwidth() / 2)
+      .attr('y', d => y(d.value) - 6)
+      .attr('text-anchor', 'middle')
+      .text(d => d.value)
+  }
+  onMounted(async () => {
+    await nextTick()
+    drawChart()
+  })
+
+  watch(guests, async () => {
+    await nextTick()
+    drawChart()
+  }, { deep: true })
   </script>
   
   <style scoped>
