@@ -3,7 +3,7 @@
     <div class="auth-container">
       <div class="auth-left">
         <h1>
-        <span class="create">Create your Account</span><br /></h1>
+        <span class="create">Create Your Account</span><br /></h1>
         <p>Join EventHive as an attendee or organizer and start exploring events today.</p>
       </div>
 

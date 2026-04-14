@@ -4,7 +4,7 @@
       <div class="auth-left">
         <h1>
           <span class="welcome">Welcome</span><br />
-          <span class="back">back</span>
+          <span class="back">Back</span>
         </h1>
         <p>Manage your events, RSVPs, and tickets all in one place.</p>
       </div>
