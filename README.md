@@ -1,163 +1,115 @@
-# EventHive 🐝
+# <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Honeybee.png" alt="Honeybee" width="35" height="35" /> EventHive
 
-EventHive is a full-stack web application that allows users to discover, create, manage, and interact with events. The platform supports both attendees and organizers, providing features such as event browsing, RSVP management, guest analytics, interactive polls, attendee matchmaking, inbox messaging, and community suggestions.
+> 🐝 A full-stack event management platform where attendees discover, connect, and engage — while organizers track, analyze, and grow their events.
 
-📹 Watch the [demo](https://youtube.com)
+[![Demo](https://img.shields.io/badge/Watch-Demo-red?style=for-the-badge&logo=youtube)](https://youtube.com)
+[![Made with Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org)
+[![Vue 3](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D)](https://vuejs.org)
+[![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)](https://mongodb.com)
 
 ---
 
-## Pre-requisites
+## 📖 Table of Contents
 
-Make sure the following are installed:
+- [✨ Features](#-features)
+- [⚙️ Tech Stack](#️-tech-stack)
+- [📦 Installation](#-installation)
+- [🚀 Running the App](#-running-the-app)
+- [👥 User Roles](#-user-roles)
+- [🗄️ Database Schema](#️-database-schema)
+- [📁 Project Structure](#-project-structure)
+- [🔮 Future Roadmap](#-future-roadmap)
+- [👨‍💻 Contributors](#-contributors)
 
-- Node.js
-- npm
-- Internet connection for MongoDB Atlas
+---
 
-Install dependencies:
+## ✨ Features
+
+| Category | Features |
+|----------|----------|
+| 📅 **Events** | Create, edit, delete, save, and browse events with images, dates, locations & categories |
+| 🔍 **Search** | Filter by title, category, date range, or location |
+| ✅ **RSVP** | Attending / Maybe / Declined with organizer tracking |
+| 🤝 **Matchmaking** | Connect with like-minded attendees, send/accept requests, chat |
+| 📊 **Analytics** | D3.js bar charts & pie charts for RSVPs and poll results |
+| 🗳️ **Polls** | Organizers create polls; attendees vote; results visualized live |
+| 💡 **Suggestions** | Community-driven event ideas with upvotes |
+| 📥 **Inbox** | Event reminders, matchmaking requests, chat messages, read/unread status |
+
+---
+
+## ⚙️ Tech Stack
+
+<div align="center">
+
+| Layer | Technologies |
+|-------|---------------|
+| **Frontend** | Vue 3 • JavaScript • HTML5 • CSS3 • jQuery • D3.js |
+| **Backend** | Node.js • Express.js • REST API |
+| **Database** | MongoDB Atlas |
+| **Tooling** | Vite • Concurrently • Fetch API |
+
+</div>
+
+---
+
+## 📦 Installation
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v16+)
+- [npm](https://www.npmjs.com/)
+- MongoDB Atlas account (or local MongoDB)
+
+### Steps
 
 ```bash
+# 1. Clone the repository
+git clone https://github.com/yourusername/eventhive.git
 cd eventhive
+
+# 2. Install frontend dependencies
 npm install
 npm install jquery vue-router d3
 
+# 3. Install backend dependencies
 cd backend
 npm install
 
+# 4. Install concurrently (run both servers at once)
 cd ..
 npm install concurrently --save-dev
 ```
 
-## How to Run
+> 💡 **Note:** Create a `.env` file in the `backend/` folder with your MongoDB Atlas connection string.
 
-From the project root folder, run:
+---
+
+## 🚀 Running the App
 
 ```bash
 npm run dev:all
 ```
 
-**Servers**
+| Server | URL |
+|--------|-----|
+| 🌐 Frontend (Vite) | `http://localhost:5173` |
+| ⚙️ Backend (Express) | `http://localhost:5001` |
 
-- Frontend: runs on Vite, usually at `http://localhost:5173`
-- Backend: runs on Express, usually at `http://localhost:5001`
+> ⚠️ **The backend MUST be running** for: login/signup, RSVP, polls, inbox/chat, matchmaking, and reminders.
 
- **The backend must be running for:**
+---
 
-- login/signup
-- RSVP
-- polls
-- inbox/chat
-- matchmaking
-- reminders
+## 👥 User Roles
 
-## Project Overview
-
-EventHive creates a complete event experience for both attendees and organizers.
-
-**Users can:**
-
-- browse events
-- RSVP
-- vote in polls
-- connect with other attendees
-- send messages
-- receive reminders
-
-**Organizers can:**
-
-- create events
-- manage guests
-- send reminders
-- analyze RSVPs and poll results using D3 visualizations
-
-## Features
-
-### Event Management
-
-Create events with:
-
-- Title
-- Date
-- Location
-- Category
-- Description
-- Event image
-
-Edit and delete events  
-View detailed event pages  
-Save events
-
-### Search and Filtering
-
-Search events by title  
-Filter by:
-
-- Category
-- Date (year/month/day)
-- Location
-
-### RSVP System
-
-RSVP as:
-
-- Attending
-- Maybe
-- Declined
-
-Organizer guest tracking  
-Recent RSVP activity display
-
-### Event Matchmaking
-
-Connect with attendees with similar interests  
-Send connection requests  
-Accept or decline requests  
-Chat via inbox messaging system
-
-### Guest Analytics (D3)
-
-RSVP breakdown bar chart  
-Poll results pie chart  
-Built using D3.js (SVG-based visualizations)  
-Dynamic data updates
-
-### Poll System
-
-Organizers create polls  
-Attendees vote  
-Results stored in MongoDB  
-Visualized using D3 charts
-
-### Suggestions System
-
-Attendees submit event ideas  
-Community can view and like suggestions  
-Helps organizers understand demand
-
-### Inbox System
-
-Event reminders  
-Matchmaking requests  
-Chat messaging  
-Read/unread notifications
-
-## Persistent Data
-
-Stored in MongoDB:
-
-- Users
-- Events
-- RSVPs
-- Polls
-- Suggestions
-- Saved events
-- Matchmaking requests
-- Messages
-- Reminders
-
-## User Roles
-
-**Everyone**
+<table>
+<tr>
+<th>👤 Everyone</th>
+<th>🎟️ Attendees</th>
+<th>📊 Organizers</th>
+</tr>
+<tr>
+<td>
 
 - Browse/search events
 - View event details
@@ -168,100 +120,105 @@ Stored in MongoDB:
 - Use inbox
 - View suggestions
 
-**Attendees**
+</td>
+<td>
 
-- Submit suggestions
+- Submit event suggestions
 - Access MySuggestions page
 - View dashboard activity
-- Use matchmaking and messaging
-- Like Suggestion Posts
+- Use matchmaking & messaging
+- Like suggestion posts
 
-**Organizers**
+</td>
+<td>
 
 - Create/edit/delete events
 - View MyEvents page
 - Create polls
 - Access guest lists
-- View analytics
+- View analytics (D3 charts)
 - Send reminders
-- Like Suggestion Posts
+- Like suggestion posts
 
-## UI and UX
+</td>
+</tr>
+</table>
 
-Responsive design  
-Custom CSS styling  
-Dynamic DOM updates using Vue  
-Smooth animations  
-Clean dashboard layouts
+---
 
-## Tech Stack
+## 🗄️ Database Schema
 
-**Frontend**
+**MongoDB Collections:**
 
-- Vue 3
-- JavaScript
-- HTML / CSS
-- jQuery
-- D3.js
+```
+📦 Users
+📦 Events
+📦 RSVPs
+📦 Polls
+📦 Suggestions
+📦 SavedEvents
+📦 MatchmakingRequests
+📦 Messages
+📦 Reminders
+```
 
-**Backend**
+---
 
-- Node.js
-- Express.js
-
-**Database**
-
-- MongoDB Atlas
-
-**Concepts Used**
-
-- Fetch API (AJAX)
-- REST API design
-- Dynamic DOM rendering
-- Role-based routing
-- Data visualization (SVG via D3)
-
-## 📁 Folder Structure
+## 📁 Project Structure
 
 ```
 eventhive/
 │
-├── src/
-│   ├── pages/
-│   ├── components/
-│   ├── router/
-│   └── assets/
+├── 📁 src/                    # Frontend (Vue 3)
+│   ├── pages/                 # Page components
+│   ├── components/            # Reusable Vue components
+│   ├── router/                # Vue Router config
+│   └── assets/                # CSS, images, etc.
 │
-├── backend/
-│   ├── routes/
-│   ├── db/
-│   └── server files
+├── 📁 backend/                # Backend (Node.js + Express)
+│   ├── routes/                # API endpoints
+│   ├── db/                    # MongoDB connection
+│   └── server.js              # Entry point
 │
-└── package files
+└── 📄 package.json            # Root package file
 ```
 
-## Notes for Running
+---
 
-- MongoDB Atlas must be connected correctly
-- Backend must be running for full functionality
-- If the app does not run locally, refer to the demo video
+## 🔮 Future Roadmap
 
+- [ ] Real-time messaging with **Socket.io**
+- [ ] Image uploads (instead of URLs) via Cloudinary
+- [ ] Push & email notifications
+- [ ] AI-powered event recommendations
+- [ ] Google Calendar / iCal integration
+- [ ] Mobile-responsive PWA
 
-## Future Improvements
+---
 
-- Real-time messaging with Socket.io
-- Image uploads instead of URLs
-- Advanced notifications
-- Calendar integration
-- Improved mobile UX
+## 📸 Screenshots
 
-## Images
+> Add your screenshots here:
 
+```
+![Homepage](screenshots/home.png)
+![Dashboard](screenshots/dashboard.png)
+![Analytics](screenshots/analytics.png)
+```
 
+---
 
-## Contributors
+## 👨‍💻 Contributors
 
-- Malasa Khan
-- Mehreen Morshed
-- Muskan Morshed
-- Shimza Warraich
+| Name | Role |
+|------|------|
+| **Malasa Khan** | Full Stack Developer |
+| **Mehreen Morshed** | Full Stack Developer |
+| **Muskan Morshed** | Full Stack Developer |
+| **Shimza Warraich** | Full Stack Developer |
+
+---
+
+<div align="center">
+  <sub>Built with 🐝 and ☕ by Team EventHive</sub>
+</div>
