@@ -22,7 +22,14 @@
         <router-link v-if="user" to="/" class="nav-link" @click="closeMenu">Home</router-link>
 
       <template v-if="user">
-        <router-link to="/suggestions" class="nav-link" @click="closeMenu">Suggestions</router-link>
+        <router-link
+          v-if="user.role === 'attendee'"
+          to="/suggestions"
+          class="nav-link"
+          @click="closeMenu"
+        >
+          Suggestions
+        </router-link>
 
         <!-- My dropdown -->
         <div class="nav-dropdown">
@@ -31,15 +38,32 @@
           </button>
 
           <div class="dropdown-menu" v-show="isMyOpen">
-            <router-link to="/my-suggestions" class="dropdown-item" @click="closeAllMenus">
-              My Suggestions
-            </router-link>
             <router-link to="/saved-events" class="dropdown-item" @click="closeAllMenus">
               Saved Events
             </router-link>
+
+            <router-link
+              v-if="user.role === 'attendee'"
+              to="/my-suggestions"
+              class="dropdown-item"
+              @click="closeAllMenus"
+            >
+              My Suggestions
+            </router-link>
+
+            <router-link
+              v-if="user.role === 'organizer'"
+              to="/my-events"
+              class="dropdown-item"
+              @click="closeAllMenus"
+            >
+              My Events
+            </router-link>
+
             <router-link to="/rsvps" class="dropdown-item" @click="closeAllMenus">
               My RSVPs
             </router-link>
+            
           </div>
         </div>
 
@@ -55,7 +79,6 @@
       </template>
 
         <template v-if="user && user.role === 'organizer'">
-          <router-link to="/my-events" class="nav-link" @click="closeMenu">My Events</router-link>
           <router-link to="/create-event" class="nav-link" @click="closeMenu">Create Event</router-link>
         </template>
 
