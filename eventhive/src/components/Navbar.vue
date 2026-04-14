@@ -119,13 +119,34 @@ onUnmounted(() => {
 </script>
 <style scoped>
 
-.user-greeting.link {
-  cursor: pointer;
+.nav-link {
+  color: rgba(255, 255, 255, 0.9);
   text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  gap: 18px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
 }
 
-.user-greeting.link:hover {
-  opacity: 0.8;
+.nav-link:hover {
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.user-greeting {
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+  margin-left: 16px;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.user-greeting:hover {
+  background: rgba(0, 0, 0, 0.25);
 }
 
 .burger-btn {
