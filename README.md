@@ -3,6 +3,7 @@
 > A full-stack event management platform where attendees discover, connect, and engage — while organizers track, analyze, and grow their events.
 
 [![Demo](https://img.shields.io/badge/Watch-Demo-red?style=for-the-badge&logo=youtube)](https://youtube.com)
+
 [![Made with Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org)
 [![Vue 3](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D)](https://vuejs.org)
 [![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)](https://mongodb.com)
@@ -11,15 +12,15 @@
 
 ## Table of Contents
 
-- [Features](#-features)
-- [Tech Stack](#️-tech-stack)
-- [Installation](#-installation)
-- [Running the App](#-running-the-app)
-- [User Roles](#-user-roles)
-- [Database Schema](#️-database-schema)
-- [Project Structure](#-project-structure)
-- [Future Roadmap](#-future-roadmap)
-- [Contributors](#-contributors)
+- [Features](#features)
+- [Tech Stack](#️tech-stack)
+- [Installation](#installation)
+- [Running the App](#running-the-app)
+- [User Roles](#user-roles)
+- [Database Schema](#️database-schema)
+- [Project Structure](#project-structure)
+- [Future Roadmap](#future-roadmap)
+- [Contributors](#contributors)
 
 ---
 
@@ -82,7 +83,7 @@ cd backend
 npm install
 ```
 
-# 4. Install concurrently (run both servers at once)
+# 4. Install concurrently (to run both servers at once)
 ```
 cd ../..
 npm install concurrently --save-dev
@@ -194,12 +195,12 @@ eventhive/
 
 ## Future Roadmap
 
-- [ ] Real-time messaging with **Socket.io**
-- [ ] Image uploads (instead of URLs) via Cloudinary
-- [ ] Push & email notifications
-- [ ] AI-powered event recommendations
-- [ ] Google Calendar / iCal integration
-- [ ] Mobile-responsive PWA
+- Real-time messaging with **Socket.io**
+- Image uploads (instead of URLs) via Cloudinary
+- Push & email notifications\
+- AI-powered event recommendations
+- Google Calendar / iCal integration
+- Mobile-responsive PWA
 
 ---
 
