@@ -132,7 +132,7 @@ onUnmounted(() => {
 }
 
 .nav-link:hover {
-  color: #ffffff;
+  color: #f7d774;
   background: rgba(0, 0, 0, 0.25);
 }
 
@@ -146,6 +146,7 @@ onUnmounted(() => {
 }
 
 .user-greeting:hover {
+  color: #f7d774; 
   background: rgba(0, 0, 0, 0.25);
 }
 
