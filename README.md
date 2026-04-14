@@ -1,15 +1,18 @@
 # <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Honeybee.png" alt="Honeybee" width="35" height="35" /> EventHive
 
-> 🐝 A full-stack event management platform where attendees discover, connect, and engage — while organizers track, analyze, and grow their events.
+> A full-stack event management platform where attendees discover, connect, and engage — while organizers track, analyze, and grow their events.
 
 [![Demo](https://img.shields.io/badge/Watch-Demo-red?style=for-the-badge&logo=youtube)](https://youtube.com)
+
 [![Made with Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org)
+
 [![Vue 3](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D)](https://vuejs.org)
+
 [![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)](https://mongodb.com)
 
 ---
 
-## 📖 Table of Contents
+## Table of Contents
 
 - [Features](#-features)
 - [Tech Stack](#️-tech-stack)
@@ -164,23 +167,23 @@ Reminders
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 eventhive/
 │
-├── 📁 src/                    # Frontend (Vue 3)
+├── src/                    # Frontend (Vue 3)
 │   ├── pages/                 # Page components
 │   ├── components/            # Reusable Vue components
 │   ├── router/                # Vue Router config
 │   └── assets/                # CSS, images, etc.
 │
-├── 📁 backend/                # Backend (Node.js + Express)
+├── backend/                # Backend (Node.js + Express)
 │   ├── routes/                # API endpoints
 │   ├── db/                    # MongoDB connection
 │   └── server.js              # Entry point
 │
-└── 📄 package.json            # Root package file
+└── package.json            # Root package file
 ```
 
 ---
@@ -212,5 +215,5 @@ eventhive/
 ---
 
 <div align="center">
-  <sub>Built with 🐝 and ☕ by Team EventHive</sub>
+  <sub>Built by Team EventHive 🐝 </sub>
 </div>
