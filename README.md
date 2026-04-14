@@ -26,256 +26,202 @@ npm install
 
 cd ..
 npm install concurrently --save-dev
-▶️ How to Run
+```
+
+## ▶️ How to Run
+
 From the project root folder, run:
 
-bash
+```bash
 npm run dev:all
-Servers
+```
 
-Frontend: runs on Vite, usually at http://localhost:5173
+**Servers**
 
-Backend: runs on Express, usually at http://localhost:5001
+- Frontend: runs on Vite, usually at `http://localhost:5173`
+- Backend: runs on Express, usually at `http://localhost:5001`
 
-⚠️ The backend must be running for:
+⚠️ **The backend must be running for:**
 
-login/signup
+- login/signup
+- RSVP
+- polls
+- inbox/chat
+- matchmaking
+- reminders
 
-RSVP
+## 🧠 Project Overview
 
-polls
-
-inbox/chat
-
-matchmaking
-
-reminders
-
-🧠 Project Overview
 EventHive creates a complete event experience for both attendees and organizers.
 
-Users can:
+**Users can:**
 
-browse events
+- browse events
+- RSVP
+- vote in polls
+- connect with other attendees
+- send messages
+- receive reminders
 
-RSVP
+**Organizers can:**
 
-vote in polls
+- create events
+- manage guests
+- send reminders
+- analyze RSVPs and poll results using D3 visualizations
 
-connect with other attendees
+## 🚀 Features
 
-send messages
+### 📅 Event Management
 
-receive reminders
-
-Organizers can:
-
-create events
-
-manage guests
-
-send reminders
-
-analyze RSVPs and poll results using D3 visualizations
-
-🚀 Features
-📅 Event Management
 Create events with:
 
-Title
+- Title
+- Date
+- Location
+- Category
+- Description
+- Event image
 
-Date
-
-Location
-
-Category
-
-Description
-
-Event image
-
-Edit and delete events
-
-View detailed event pages
-
+Edit and delete events  
+View detailed event pages  
 Save events
 
-🔍 Search and Filtering
-Search events by title
+### 🔍 Search and Filtering
 
+Search events by title  
 Filter by:
 
-Category
+- Category
+- Date (year/month/day)
+- Location
 
-Date (year/month/day)
+### ✅ RSVP System
 
-Location
-
-✅ RSVP System
 RSVP as:
 
-Attending
+- Attending
+- Maybe
+- Declined
 
-Maybe
-
-Declined
-
-Organizer guest tracking
-
+Organizer guest tracking  
 Recent RSVP activity display
 
-🤝 Event Matchmaking
-Connect with attendees with similar interests
+### 🤝 Event Matchmaking
 
-Send connection requests
-
-Accept or decline requests
-
+Connect with attendees with similar interests  
+Send connection requests  
+Accept or decline requests  
 Chat via inbox messaging system
 
-📊 Guest Analytics (D3)
-RSVP breakdown bar chart
+### 📊 Guest Analytics (D3)
 
-Poll results pie chart
-
-Built using D3.js (SVG-based visualizations)
-
+RSVP breakdown bar chart  
+Poll results pie chart  
+Built using D3.js (SVG-based visualizations)  
 Dynamic data updates
 
-🗳️ Poll System
-Organizers create polls
+### 🗳️ Poll System
 
-Attendees vote
-
-Results stored in MongoDB
-
+Organizers create polls  
+Attendees vote  
+Results stored in MongoDB  
 Visualized using D3 charts
 
-💡 Suggestions System
-Attendees submit event ideas
+### 💡 Suggestions System
 
-Community can view and like suggestions
-
+Attendees submit event ideas  
+Community can view and like suggestions  
 Helps organizers understand demand
 
-📥 Inbox System
-Event reminders
+### 📥 Inbox System
 
-Matchmaking requests
-
-Chat messaging
-
+Event reminders  
+Matchmaking requests  
+Chat messaging  
 Read/unread notifications
 
-💾 Persistent Data
+## 💾 Persistent Data
+
 Stored in MongoDB:
 
-Users
+- Users
+- Events
+- RSVPs
+- Polls
+- Suggestions
+- Saved events
+- Matchmaking requests
+- Messages
+- Reminders
 
-Events
+## 👥 User Roles
 
-RSVPs
+**Everyone**
 
-Polls
+- Browse/search events
+- View event details
+- RSVP
+- Save events
+- Vote on polls
+- Connect with attendees
+- Use inbox
+- View suggestions
 
-Suggestions
+**Attendees**
 
-Saved events
+- Submit suggestions
+- Access MySuggestions page
+- View dashboard activity
+- Use matchmaking and messaging
 
-Matchmaking requests
+**Organizers**
 
-Messages
+- Create/edit/delete events
+- View MyEvents page
+- Create polls
+- Access guest lists
+- View analytics
+- Send reminders
 
-Reminders
+## 🎨 UI and UX
 
-👥 User Roles
-Everyone
-Browse/search events
-
-View event details
-
-RSVP
-
-Save events
-
-Vote on polls
-
-Connect with attendees
-
-Use inbox
-
-View suggestions
-
-Attendees
-Submit suggestions
-
-Access MySuggestions page
-
-View dashboard activity
-
-Use matchmaking and messaging
-
-Organizers
-Create/edit/delete events
-
-View MyEvents page
-
-Create polls
-
-Access guest lists
-
-View analytics
-
-Send reminders
-
-🎨 UI and UX
-Responsive design
-
-Custom CSS styling
-
-Dynamic DOM updates using Vue
-
-Smooth animations
-
+Responsive design  
+Custom CSS styling  
+Dynamic DOM updates using Vue  
+Smooth animations  
 Clean dashboard layouts
 
-🛠️ Tech Stack
-Frontend
+## 🛠️ Tech Stack
 
-Vue 3
+**Frontend**
 
-JavaScript
+- Vue 3
+- JavaScript
+- HTML / CSS
+- jQuery
+- D3.js
 
-HTML / CSS
+**Backend**
 
-jQuery
+- Node.js
+- Express.js
 
-D3.js
+**Database**
 
-Backend
+- MongoDB Atlas
 
-Node.js
+**Concepts Used**
 
-Express.js
+- Fetch API (AJAX)
+- REST API design
+- Dynamic DOM rendering
+- Role-based routing
+- Data visualization (SVG via D3)
 
-Database
+## 📁 Folder Structure
 
-MongoDB Atlas
-
-Concepts Used
-
-Fetch API (AJAX)
-
-REST API design
-
-Dynamic DOM rendering
-
-Role-based routing
-
-Data visualization (SVG via D3)
-
-📁 Folder Structure
-text
+```
 eventhive/
 │
 ├── src/
@@ -290,59 +236,44 @@ eventhive/
 │   └── server files
 │
 └── package files
-⚠️ Notes for Running
-MongoDB Atlas must be connected correctly
+```
 
-Backend must be running for full functionality
+## ⚠️ Notes for Running
 
-If the app does not run locally, refer to the demo video
+- MongoDB Atlas must be connected correctly
+- Backend must be running for full functionality
+- If the app does not run locally, refer to the demo video
 
-🎥 Demo Requirements
+## 🎥 Demo Requirements
+
 The demo video should show:
 
-login/signup
+- login/signup
+- event creation
+- RSVP
+- poll voting
+- suggestions
+- guest analytics (D3 charts)
+- matchmaking
+- inbox messaging
+- notifications
 
-event creation
+## 🔮 Future Improvements
 
-RSVP
+- Real-time messaging with Socket.io
+- Image uploads instead of URLs
+- Advanced notifications
+- Event recommendations
+- Calendar integration
+- Improved mobile UX
 
-poll voting
+## 📸 Images
 
-suggestions
-
-guest analytics (D3 charts)
-
-matchmaking
-
-inbox messaging
-
-notifications
-
-🔮 Future Improvements
-Real-time messaging with Socket.io
-
-Image uploads instead of URLs
-
-Advanced notifications
-
-Event recommendations
-
-Calendar integration
-
-Improved mobile UX
-
-📸 Images
 Add screenshots here if needed.
 
-👨‍💻 Contributors
-Malasa Khan
+## 👨‍💻 Contributors
 
-Mehreen Morshed
-
-Muskan Morshed
-
-Shimza Warraich
-
-text
-
-Just copy everything above (from `# EventHive 🐝` to the last contributor name) and paste it into your `README.md` file on GitHub. Then commit the changes. ✅
+- Malasa Khan
+- Mehreen Morshed
+- Muskan Morshed
+- Shimza Warraich
