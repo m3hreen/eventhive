@@ -198,24 +198,16 @@ eventhive/
 
 ## 📸 Screenshots
 
-> Add your screenshots here:
 
-```
-![Homepage](screenshots/home.png)
-![Dashboard](screenshots/dashboard.png)
-![Analytics](screenshots/analytics.png)
-```
 
 ---
 
 ## 👨‍💻 Contributors
 
-| Name | Role |
-|------|------|
-| **Malasa Khan** | Full Stack Developer |
-| **Mehreen Morshed** | Full Stack Developer |
-| **Muskan Morshed** | Full Stack Developer |
-| **Shimza Warraich** | Full Stack Developer |
+- Malasa Khan
+- Mehreen Morshed
+- Muskan Morshed
+- Shimza Warraich
 
 ---
 
