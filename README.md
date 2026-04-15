@@ -106,14 +106,12 @@ npm run dev:all
 > **The backend MUST be running** for: login/signup, RSVP, polls, inbox/chat, matchmaking, and reminders. It should already be running since the command should run all concurrently.
 
 
-<summary>Need help? Watch the setup video </summary>
+## Need Help Setting Up?
 
 
-
-> ### [Click here to watch: EventHive Setup Tutorial](https://youtu.be/E0MzKak7egc)
-
-[![Setup Video](https://img.shields.io/badge/Watch%20on%20YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/E0MzKak7egc)
-
+| **Video Tutorial** |
+|:---------------------:|
+| [![Watch the setup guide](https://img.shields.io/badge/▶️_Watch_on_YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/E0MzKak7egc) |
 
 ---
 
