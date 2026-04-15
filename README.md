@@ -105,7 +105,13 @@ npm run dev:all
 
 > **The backend MUST be running** for: login/signup, RSVP, polls, inbox/chat, matchmaking, and reminders. It should already be running since the command should run all concurrently.
 
-Watch this video if you need help `https://youtu.be/E0MzKak7egc`
+## Need Help?
+
+Watch this step-by-step setup guide if you get stuck:
+
+[![Setup Tutorial](https://img.youtube.com/vi/E0MzKak7egc/0.jpg)](https://youtu.be/E0MzKak7egc)
+
+> **Click the thumbnail above** to watch the full tutorial
 ---
 
 ## User Roles
