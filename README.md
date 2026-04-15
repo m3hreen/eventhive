@@ -112,7 +112,8 @@ npm run dev:all
 | **Video Tutorial** |
 |:---------------------:|
 | [![Watch the setup guide](https://img.shields.io/badge/▶️_Watch_on_YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/E0MzKak7egc) |
-*Click the button above for a complete walkthrough*
+| *Click the button above for a complete walkthrough* |
+
 
 
 ---
