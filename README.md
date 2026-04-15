@@ -6,6 +6,7 @@
 [![Vue 3](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D)](https://vuejs.org)
 [![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)](https://mongodb.com)
 
+##### Click here to watch the demo:
 [![Demo](https://img.shields.io/badge/Watch-Demo-red?style=for-the-badge&logo=youtube)](https://youtube.com)
 ---
 
@@ -27,12 +28,12 @@
 
 | Category | Features |
 |----------|----------|
-|**Events** | Create, edit, delete, save, and browse events with images, dates, locations & categories |
-|**Search** | Filter by title, category, date range, or location |
+|**Events** | Create, edit, delete, save |
+|**Search** | Filter by title, category, date (year, month, day), or location |
 |**RSVP** | Attending / Maybe / Declined with organizer tracking |
-|**Matchmaking** | Connect with like-minded attendees, send/accept requests, chat |
+|**Matchmaking** | Connect with like-minded attendees, send/accept requests, chat messaging|
 |**Analytics** | D3.js bar charts & pie charts for RSVPs and poll results |
-|**Polls** | Organizers create polls; attendees vote; results visualized live |
+|**Polls** | Organizers create polls; attendees vote; live results visualization |
 |**Suggestions** | Community-driven event ideas with upvotes |
 |**Inbox** | Event reminders, matchmaking requests, chat messages, read/unread status |
 
@@ -44,10 +45,10 @@
 
 | Layer | Technologies |
 |-------|---------------|
-| **Frontend** | Vue 3 • JavaScript • HTML5 • CSS3 • jQuery • D3.js |
-| **Backend** | Node.js • Express.js • REST API |
+| **Frontend** | Vue • JavaScript • HTML • CSS • jQuery • DOM • D3.js • SVG|
+| **Backend** | Node.js • Express.js • AJAX • REST API |
 | **Database** | MongoDB Atlas |
-| **Tooling** | Vite • Concurrently • Fetch API |
+| **Tooling** | Concurrently • Fetch API |
 
 </div>
 
@@ -57,18 +58,17 @@
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v16+)
+- [Node.js](https://nodejs.org/)
 - [npm](https://www.npmjs.com/)
-- MongoDB Atlas account (or local MongoDB)
 
 ### Steps
 
-# 1. Clone the repository
+### 1. Clone the repository
 ```
 git clone https://github.com/m3hreen/webdev-final.git
 ```
 
-# 2. Install frontend dependencies
+### 2. Install frontend dependencies
 ```
 cd eventhive
 npm install
@@ -76,13 +76,13 @@ npm install jquery vue-router d3
 npm install d3
 ```
 
-# 3. Install backend dependencies
+### 3. Install backend dependencies
 ```
 cd backend
 npm install
 ```
 
-# 4. Install concurrently (to run both servers at once)
+### 4. Install concurrently (to run both servers at once)
 ```
 cd ../..
 npm install concurrently --save-dev
@@ -103,7 +103,7 @@ npm run dev:all
 |Frontend (Vite) | `http://localhost:5173` |
 |Backend (Express) | `http://localhost:5001` |
 
-> **The backend MUST be running** for: login/signup, RSVP, polls, inbox/chat, matchmaking, and reminders.
+> **The backend MUST be running** for: login/signup, RSVP, polls, inbox/chat, matchmaking, and reminders. It should already be running since the command should run all concurrently.
 
 ---
 
