@@ -65,7 +65,7 @@
 
 ### 1. Clone the repository
 ```
-git clone https://github.com/m3hreen/webdev-final.git
+git clone https://github.com/m3hreen/eventhive.git
 ```
 
 ### 2. Install frontend dependencies
