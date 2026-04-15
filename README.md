@@ -7,7 +7,7 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)](https://mongodb.com)
 
 ##### Click here to watch the demo:
-[![Demo](https://img.shields.io/badge/Watch-Demo-red?style=for-the-badge&logo=youtube)](https://youtu.be/_F9CXX5xoig)
+[![Demo](https://img.shields.io/badge/Watch-Demo-red?style=for-the-badge&logo=youtube)](https://youtu.be/yJHy1y6x8dE)
 ---
 
 ## Table of Contents
